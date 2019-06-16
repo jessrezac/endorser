@@ -1,7 +1,10 @@
 #!/usr/bin/env ruby
 
 require "bundler/setup"
-require "endorser"
+require "podcast-book-club"
+require "nokogiri"
+require "open-uri"
+
 
 # You can add fixtures and/or initialization code here to make experimenting
 # with your gem easier. You can also use a different console, if you like.

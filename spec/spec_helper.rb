@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "endorser"
+require "podcast-book-club"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

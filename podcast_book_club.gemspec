@@ -1,12 +1,12 @@
 lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "endorser/version"
+require "podcast_book_club/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "endorser"
-  spec.version       = Endorser::VERSION
-  spec.authors       = ["<github username>"]
-  spec.email         = ["<github email address>"]
+  spec.name          = "podcast-book-club"
+  spec.version       = PodcastBookClub::VERSION
+  spec.authors       = ["jessrezac"]
+  spec.email         = ["jess.rezac@gmail.com"]
 
   spec.summary       = %q{TODO: Write a short summary, because RubyGems requires one.}
   spec.description   = %q{TODO: Write a longer description or delete this line.}
@@ -31,4 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 2.0"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "pry"
 end

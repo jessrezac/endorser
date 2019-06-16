@@ -1,6 +1,6 @@
-RSpec.describe Endorser do
+RSpec.describe PodcastBookClub do
   it "has a version number" do
-    expect(Endorser::VERSION).not_to be nil
+    expect(PodcastBookClub::VERSION).not_to be nil
   end
 
   it "does something useful" do
