@@ -1,7 +1,5 @@
-require "podcast_book_club/version"
+require "nokogiri"
+require "open-uri"
+require "pry"
 
-module PodcastBookClub
-  class Chatter
-    def say_hello
-      puts "This is podcast book club."
-end
+require 'podcast_book_club'
