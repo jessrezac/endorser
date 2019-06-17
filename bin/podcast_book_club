@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/podcast_book_club'
+
+require_relative "./../lib/podcast_book_club.rb"
 
 PodcastBookClub::CLI.new.call
