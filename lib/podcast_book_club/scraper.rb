@@ -5,7 +5,7 @@ class Scraper
         puts "hello, where should i scrape?"
         input = "https://player.fm/series/the-ezra-klein-show"
         fetch_episodes(input)
-        write_books(episodes)
+        write_books(Episode.all)
     end
     
     def fetch_episodes(path)
@@ -21,13 +21,18 @@ class Scraper
         attributes = {title: title, link: link}
         
         Episode.new(attributes)
+
       end
     end
 
-    def write_books(path)
-        html = open(path)
-        doc = Nokogiri::HTML(html)
-        description = doc.css(".ln-channel-episode-description-text > strong ~ a")
+    def write_books(episodes)
+        episodes.each do |episode|
+          path = episode.link
+          
+          html = open(path)
+          doc = Nokogiri::HTML(html)
+          
+          description = doc.css(".ln-channel-episode-description-text > strong ~ a")
 
         books = []
         description.each do |link|
