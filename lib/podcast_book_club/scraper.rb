@@ -12,19 +12,19 @@ class Scraper
       html = open(path)
       doc = Nokogiri::HTML(html)
       
-      episodes = doc.css(".info")
+      episodes = doc.css(".info-top")
       
       episodes.each do |episode|
-        title = 
-        link = 
+        title = episode.css("a").text.strip
+        link = "https://player.fm#{episode.css("a").attribute("href").value}"
         
-        binding.pry
+        attributes = {title: title, link: link}
         
-        Episode.new
+        Episode.new(attributes)
       end
     end
 
-    def fetch_episodes(path)
+    def write_books(path)
         html = open(path)
         doc = Nokogiri::HTML(html)
         description = doc.css(".ln-channel-episode-description-text > strong ~ a")
