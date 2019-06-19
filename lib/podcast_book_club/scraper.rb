@@ -32,18 +32,19 @@ class Scraper
           html = open(path)
           doc = Nokogiri::HTML(html)
           
-          description = doc.css(".ln-channel-episode-description-text > strong ~ a")
+          description_links = doc.css(".description.prose>strong~a")
 
-        books = []
-        description.each do |link|
+          description_links.each do |link|
             book_path = link.attribute("href")
             
-            books << book_path
-            
+            Book.new_from_url(book_path)
+
+          end
+
         end
 
-        binding.pry
     end
-end
+
+  end
 
 Scraper.new
