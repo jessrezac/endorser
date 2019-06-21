@@ -1,5 +1,5 @@
 class Book
-    attr_accessor :url, :title, :author, :genre, :episode
+    attr_accessor :url, :title, :author, :genre, :episode, :synopsis
 
     @@all = []
 
