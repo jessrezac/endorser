@@ -1,5 +1,5 @@
 class Episode
-  attr_accessor :title, :link
+  attr_accessor :title, :link, :description, :date
   
   @@all = []
   
