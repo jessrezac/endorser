@@ -7,8 +7,6 @@ class Book
         attributes.each {|k,v| self.send("#{k}=", v)}
         @@all << self
 
-        binding.pry  
-
     end
 
     def self.all
@@ -24,7 +22,7 @@ class Book
         author = doc.css("a.contributorNameID").text.strip
 
         attributes = {genre: genre, title: title, author: author}
-        
+
         Book.new(attributes)
 
     end
