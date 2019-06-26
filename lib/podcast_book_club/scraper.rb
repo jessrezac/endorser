@@ -12,14 +12,18 @@ class Scraper
       html = open(path)
       doc = Nokogiri::HTML(html)
 
-      episodes = doc.css(".info-top")
+      episodes = doc.css(".info")
 
       episodes.each do |episode|
-        title = episode.css("a").text.strip
-        link = "https://player.fm#{episode.css("a").attribute("href").value}"
+        title = episode.css(".info-top a").text.strip
+        link = "https://player.fm#{episode.css(".info-top a").attribute("href").value}"
+        date = episode.css(".timeago").attribute("datetime").value
+        date.slice!(/T.+/)
 
-
-        attributes = {title: title, link: link}
+        attributes = {
+            title: title,
+            link: link,
+            date: date}
 
         Episode.new(attributes)
 
