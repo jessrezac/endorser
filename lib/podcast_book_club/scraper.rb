@@ -5,7 +5,7 @@ class Scraper
         puts "hello, where should i scrape?"
         path = build_path
         fetch_episodes(path)
-        write_books(Episode.all)
+        find_books(Episode.all[5])
     end
 
     def fetch_episodes(path)
@@ -30,23 +30,35 @@ class Scraper
       end
     end
 
-    def write_books(episodes)
-        episodes.each do |episode|
-          path = episode.link
+    def find_books(episode)
+        path = episode.link
 
-          html = open(path)
-          doc = Nokogiri::HTML(html)
+        html = open(path)
+        doc = Nokogiri::HTML(html)
 
-          description_links = doc.css(".description.prose>strong~a")
+        episode.description = doc.css(".story .description").text
+        book_links = doc.css(".description.prose>strong~a")
+        book_titles = []
+        description_text = episode.description
 
-          description_links.each do |link|
-            book_path = link.attribute("href")
-
-            Book.new_from_url(book_path)
-
-          end
-
+        book_links.map do |link|
+            book_titles << link.text
         end
+
+        description = description_text.split(book_titles[0]).pop.to_s
+
+        books = []
+        book_titles.map.with_index do |title, i|
+            author = description.split(book_titles[ i + 1 ])[0]
+            books << "#{title}#{author}"
+         end
+
+         binding.pry
+
+#   books => "Capital in the Twenty-First Century by Thomas Piketty",
+#  "Evicted: Poverty and Profit in the American City by Thomas PikettyEvicted: Poverty and Profit in the American City by Matthew Desmond",
+#  "$2.00 a Day: Living on Almost Nothing in Americaby"]
+
 
     end
 
