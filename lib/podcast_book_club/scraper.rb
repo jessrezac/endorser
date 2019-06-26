@@ -4,11 +4,13 @@ class Scraper
     def initialize
         puts "hello, where should i scrape?"
         input = "https://player.fm/series/the-ezra-klein-show"
+        build_path
         fetch_episodes(input)
         write_books(Episode.all)
     end
 
     def build_path
+        binding.pry
         url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=1000&order=newest&query=&style=list&container=false&offset=0"
     end
 
