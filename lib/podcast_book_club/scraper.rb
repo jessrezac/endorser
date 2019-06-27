@@ -4,7 +4,7 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
-        build_books(Episode.all[80])
+        build_books(Episode.all[74])
     end
 
     def fetch_episodes(path)
@@ -94,18 +94,15 @@ class Scraper
     end
 
     def parse_without_links(description)
-        binding.pry
         after_books = description.split(/(B|b)ooks:\s/)[-1]
-
         books = after_books.split("Notes from our sponsors")[0]
+        book_array = books.strip.split(/by(\s[A-Z][a-zA-Z]*\s?a?n?d?\s?[A-Z]?[a-zA-Z]*)/)
 
-        book_array = books.strip.split(/(by\s[A-Z][a-z]+\s[A-Z][a-z]+(\sand\s[A-Z][a-z]+\s[A-Z][a-z]+)?)/)
-
-        book_list = []
+        book_queries = []
 
         book_array.map.with_index do |item, i|
             if i.even?
-                book_list << "#{item.strip} #{book_array[i+1]}"
+                book_queries << "#{item.strip} #{book_array[i+1]}"
             end
         end
 
@@ -116,7 +113,7 @@ class Scraper
 
         binding.pry
 
-        book_list
+        book_queries
     end
 
   end
