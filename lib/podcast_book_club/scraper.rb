@@ -4,7 +4,7 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
-        find_books(Episode.all[225])
+        build_books(Episode.all[19])
     end
 
     def fetch_episodes(path)
@@ -25,26 +25,27 @@ class Scraper
             date: date}
 
         Episode.new(attributes)
-
       end
     end
 
-    def find_books(episode)
-        path = episode.link
+    def build_books(episode)
+      describe_episode(episode)
+      choose_parser(episode)
+      book_queries = parse_descriptions(episode, @episode_doc)
 
-        html = open(path)
-        doc = Nokogiri::HTML(html)
+    end
 
-        episode.description = doc.css(".story .description").text
-        book_links = doc.css(".description.prose>strong~a")
+
+    def parse_descriptions(episode, doc)
         book_titles = []
-        description_text = episode.description
+
+        book_links = doc.css(".description.prose>strong~a")
 
         book_links.map do |link|
             book_titles << link.text
         end
 
-        description = description_text.split(book_titles[0]).pop.to_s
+        description = episode.description.split(book_titles[0]).pop.to_s
 
         books = []
         book_titles.map.with_index do |title, i|
@@ -76,8 +77,26 @@ class Scraper
         url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 225}&order=newest&query=&style=list&container=false&offset=0"
     end
 
-    def episode_format_predicter
+    def describe_episode(episode)
+      path = episode.link
+
+      html = open(path)
+      @episode_doc = Nokogiri::HTML(html)
+
+      episode.description = @episode_doc.css(".story .description").text
+    end
+
+    def choose_parser(episode)
+      books_method = Date.new(2008, 12, 22)
+      recommended_method = Date.new()
+      recommendations_method = Date.new(2019, 1, 14)
       
+
+      case episode.date
+      when 
+
+
+        
     end
 
   end
