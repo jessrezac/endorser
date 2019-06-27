@@ -2,10 +2,9 @@ require_relative "../podcast_book_club.rb"
 
 class Scraper
     def initialize
-        puts "hello, where should i scrape?"
         path = build_path
         fetch_episodes(path)
-        find_books(Episode.all[5])
+        find_books(Episode.all[225])
     end
 
     def fetch_episodes(path)
@@ -49,16 +48,22 @@ class Scraper
 
         books = []
         book_titles.map.with_index do |title, i|
-            author = description.split(book_titles[ i + 1 ])[0]
+          unless i + 1 == book_titles.length
+            description = description.split(book_titles[i+1 || i])
+            author = description[0]
+
             books << "#{title}#{author}"
+
+            description = description.pop
+
+          else
+
+            books << "#{title}#{description}"
          end
 
-         binding.pry
+        end
 
-#   books => "Capital in the Twenty-First Century by Thomas Piketty",
-#  "Evicted: Poverty and Profit in the American City by Thomas PikettyEvicted: Poverty and Profit in the American City by Matthew Desmond",
-#  "$2.00 a Day: Living on Almost Nothing in Americaby"]
-
+        binding.pry
 
     end
 
@@ -69,6 +74,10 @@ class Scraper
         today = Date.today
         episodes_since_snapshot = snapshot_date.step(today).select{|d| d.monday? || d.wednesday?}.size
         url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 225}&order=newest&query=&style=list&container=false&offset=0"
+    end
+
+    def episode_format_predicter
+      
     end
 
   end
