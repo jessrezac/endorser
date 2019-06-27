@@ -4,7 +4,7 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
-        build_books(Episode.all[74])
+        build_books(Episode.all[5])
     end
 
     def fetch_episodes(path)
@@ -30,9 +30,15 @@ class Scraper
 
     def build_books(episode)
       describe_episode(episode)
-      description = episode.description
-      book_queries = parse_without_links(description)
-        binding.pry
+      choose_parser(episode)
+      
+      unless @episode_doc.css(".description.prose>strong~a") == []
+        book_queries = parse_with_links(episode)
+      else
+        book_queries = parse_without_links()
+      end
+
+      binding.pry
     end
 
 
@@ -52,8 +58,7 @@ class Scraper
 
       html = open(path)
       @episode_doc = Nokogiri::HTML(html)
-
-      episode.description = @episode_doc.css(".story .description").text
+      @description = @episode_doc.css(".story .description").text
     end
 
     def choose_parser(episode)
@@ -63,18 +68,19 @@ class Scraper
 
     end
 
-    def parse_with_links(episode, doc)
+    def parse_with_links(episode)
         book_titles = []
 
-        book_links = doc.css(".description.prose>strong~a")
+        book_links = @episode_doc.css(".description.prose>strong~a")
 
         book_links.map do |link|
             book_titles << link.text
         end
 
-        description = episode.description.split(book_titles[0]).pop.to_s
+        description = @description.split(book_titles[0]).pop.to_s
 
         books = []
+
         book_titles.map.with_index do |title, i|
           unless i + 1 == book_titles.length
             description = description.split(book_titles[i+1 || i])
@@ -87,14 +93,17 @@ class Scraper
           else
 
             books << "#{title}#{description}"
-         end
+
+          end
 
         end
 
+        binding.pry
+
     end
 
-    def parse_without_links(description)
-        after_books = description.split(/(B|b)ooks:\s/)[-1]
+    def parse_without_links
+        after_books = @description.split(/(B|b)ooks:\s/)[-1]
         books = after_books.split("Notes from our sponsors")[0]
         book_array = books.strip.split(/by(\s[A-Z][a-zA-Z]*\s?a?n?d?\s?[A-Z]?[a-zA-Z]*)/)
 
@@ -105,13 +114,6 @@ class Scraper
                 book_queries << "#{item.strip} #{book_array[i+1]}"
             end
         end
-
-#         Currently returning: need to format more like parse with links?
-#         => ["Democracy for Realists: Why Elections Do Not Produce Responsive Government by Christopher Achen and Larry Bartels",
-#           "and Larry Bartels  The Righteous Mind: Why Good People Are Divided by Politics and Religion ",
-#           "by Jonathan Haidt "]
-
-        binding.pry
 
         book_queries
     end
