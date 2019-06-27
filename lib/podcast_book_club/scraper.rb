@@ -4,7 +4,7 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
-        build_books(Episode.all[19])
+        build_books(Episode.all[80])
     end
 
     def fetch_episodes(path)
@@ -30,13 +30,40 @@ class Scraper
 
     def build_books(episode)
       describe_episode(episode)
-      choose_parser(episode)
-      book_queries = parse_descriptions(episode, @episode_doc)
-
+      description = episode.description
+      book_queries = parse_without_links(description)
+        binding.pry
     end
 
 
-    def parse_descriptions(episode, doc)
+
+
+    private
+
+    def build_path
+        snapshot_date = Date.new(2019,6,25)
+        today = Date.today
+        episodes_since_snapshot = snapshot_date.step(today).select{|d| d.monday? || d.wednesday?}.size
+        url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 225}&order=newest&query=&style=list&container=false&offset=0"
+    end
+
+    def describe_episode(episode)
+      path = episode.link
+
+      html = open(path)
+      @episode_doc = Nokogiri::HTML(html)
+
+      episode.description = @episode_doc.css(".story .description").text
+    end
+
+    def choose_parser(episode)
+      books_method = Date.new(2008, 12, 22)
+      recommended_method = Date.new()
+      recommendations_method = Date.new(2019, 1, 14)
+
+    end
+
+    def parse_with_links(episode, doc)
         book_titles = []
 
         book_links = doc.css(".description.prose>strong~a")
@@ -64,39 +91,32 @@ class Scraper
 
         end
 
+    end
+
+    def parse_without_links(description)
+        binding.pry
+        after_books = description.split(/(B|b)ooks:\s/)[-1]
+
+        books = after_books.split("Notes from our sponsors")[0]
+
+        book_array = books.strip.split(/(by\s[A-Z][a-z]+\s[A-Z][a-z]+(\sand\s[A-Z][a-z]+\s[A-Z][a-z]+)?)/)
+
+        book_list = []
+
+        book_array.map.with_index do |item, i|
+            if i.even?
+                book_list << "#{item.strip} #{book_array[i+1]}"
+            end
+        end
+
+#         Currently returning: need to format more like parse with links?
+#         => ["Democracy for Realists: Why Elections Do Not Produce Responsive Government by Christopher Achen and Larry Bartels",
+#           "and Larry Bartels  The Righteous Mind: Why Good People Are Divided by Politics and Religion ",
+#           "by Jonathan Haidt "]
+
         binding.pry
 
-    end
-
-    private
-
-    def build_path
-        snapshot_date = Date.new(2019,6,25)
-        today = Date.today
-        episodes_since_snapshot = snapshot_date.step(today).select{|d| d.monday? || d.wednesday?}.size
-        url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 225}&order=newest&query=&style=list&container=false&offset=0"
-    end
-
-    def describe_episode(episode)
-      path = episode.link
-
-      html = open(path)
-      @episode_doc = Nokogiri::HTML(html)
-
-      episode.description = @episode_doc.css(".story .description").text
-    end
-
-    def choose_parser(episode)
-      books_method = Date.new(2008, 12, 22)
-      recommended_method = Date.new()
-      recommendations_method = Date.new(2019, 1, 14)
-      
-
-      case episode.date
-      when 
-
-
-        
+        book_list
     end
 
   end
