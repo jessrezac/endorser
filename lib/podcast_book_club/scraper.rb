@@ -4,7 +4,7 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
-        build_books(Episode.all[7])
+        build_books(Episode.all[74])
     end
 
     def fetch_episodes(path)
@@ -29,28 +29,30 @@ class Scraper
 
     def build_books(episode)
       describe_episode(episode)
-      queries = send_to_parser(episode)
 
-      queries.each do |query|
-        google_book_search = GoogleBooks.search(query)
-        result = google_book_search.first
+      if @description.include?("Books") || @description.include?("books")
+        queries = send_to_parser(episode)
 
-        url = result.info_link
-        title = result.title
-        author = result.authors_array
-        genre = result.categories
-        synopsis = result.description
-        book_episode = episode
-        
-        Book.new({
-          url: url,
-          title: title,
-          author: author,
-          genre: genre,
-          synopsis: synopsis,
-          episode: episode
-        })
-  
+        queries.each do |query|
+          google_book_search = GoogleBooks.search(query)
+          result = google_book_search.first
+
+          url = result.info_link
+          title = result.title
+          author = result.authors_array
+          genre = result.categories
+          synopsis = result.description
+          book_episode = episode
+          
+          Book.new({
+            url: url,
+            title: title,
+            author: author,
+            genre: genre,
+            synopsis: synopsis,
+            episode: episode
+          })
+        end
       end
 
     end
@@ -92,7 +94,9 @@ class Scraper
         book_links = @episode_doc.css(".description.prose>strong~a")
 
         book_links.map do |link|
-            book_titles << link.text
+            if link.include?("amazon")
+              book_titles << link.text
+            end
         end
 
         description = @description.split(book_titles[0]).pop.to_s
@@ -121,9 +125,10 @@ class Scraper
     end
 
     def parse_without_links(episode)
-        after_books = @description.split(/(B|b)ooks:\s/)[-1]
-        books = after_books.split("Notes from our sponsors")[0]
-        book_array = books.strip.split(/by(\s[A-Z][a-zA-Z]*\s?a?n?d?\s?[A-Z]?[a-zA-Z]*)/)
+        book_block = @description.split(/(B|b)ooks:\s/)[-1]
+        book_block = book_block.split("Notes from our sponsors")[0]
+        books = book_block.split(/Find.*ART19/)[0]
+        book_array = books.strip.split(/by(\s[A-Z][a-zA-Z]*\s?a?n?d?\s?[A-Z]?[.a-zA-Z]*\s?[A-Z]?[.a-zA-Z]*)/)
 
         book_queries = []
 
