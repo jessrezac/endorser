@@ -16,9 +16,8 @@ class Scraper
       episodes.each do |episode|
         title = episode.css(".info-top a").text.strip
         link = "https://player.fm#{episode.css(".info-top a").attribute("href").value}"
-        date = episode.css(".timeago").attribute("datetime").value
-        date.slice!(/T.+/)
-
+        date = Date.strptime(episode.css(".timeago").attribute("datetime").value)
+    
         attributes = {
             title: title,
             link: link,
