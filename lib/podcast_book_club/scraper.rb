@@ -54,8 +54,6 @@ class Scraper
   
       end
 
-      binding.pry
-
     end
 
     def build_path
