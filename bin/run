@@ -3,4 +3,4 @@
 
 require_relative "../lib/podcast_book_club"
 
-PodcastBookClub::CLI.new.call
+PodcastBookClub::CLI.new
