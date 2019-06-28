@@ -2,10 +2,9 @@ require_relative "../podcast_book_club.rb"
 
 class Scraper
     def initialize
-        puts "hello, where should i scrape?"
         path = build_path
         fetch_episodes(path)
-        write_books(Episode.all)
+        build_books(Episode.all[7])
     end
 
     def fetch_episodes(path)
@@ -26,31 +25,36 @@ class Scraper
             date: date}
 
         Episode.new(attributes)
-
       end
     end
 
-    def write_books(episodes)
-        episodes.each do |episode|
-          path = episode.link
+    def build_books(episode)
+      describe_episode(episode)
+      queries = send_to_parser(episode)
 
-          html = open(path)
-          doc = Nokogiri::HTML(html)
+      queries.each do |query|
+        google_book_search = GoogleBooks.search(query)
+        result = google_book_search.first
 
-          description_links = doc.css(".description.prose>strong~a")
-
-          description_links.each do |link|
-            book_path = link.attribute("href")
-
-            Book.new_from_url(book_path)
-
-          end
-
-        end
+        url = result.info_link
+        title = result.title
+        author = result.authors_array
+        genre = result.categories
+        synopsis = result.description
+        book_episode = episode
+        
+        Book.new({
+          url: url,
+          title: title,
+          author: author,
+          genre: genre,
+          synopsis: synopsis,
+          episode: episode
+        })
+  
+      end
 
     end
-
-    private
 
     def build_path
         snapshot_date = Date.new(2019,6,25)
@@ -58,6 +62,81 @@ class Scraper
         episodes_since_snapshot = snapshot_date.step(today).select{|d| d.monday? || d.wednesday?}.size
         url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 225}&order=newest&query=&style=list&container=false&offset=0"
     end
+
+    def describe_episode(episode)
+      path = episode.link
+
+      html = open(path)
+      @episode_doc = Nokogiri::HTML(html)
+      @description = @episode_doc.css(".story .description").text
+    end
+
+    def send_to_parser(episode)
+      today = Date.today
+      with_links = Date.new(2019, 1, 14)
+      without_links = Date.new(2017, 3, 28)
+
+      case episode.date
+      when (with_links..today)
+        parse_with_links(episode)
+      when (without_links...with_links)
+        parse_without_links(episode)
+      else 
+        puts "This episode has no recommendations."
+      end
+
+    end
+
+    def parse_with_links(episode)
+        book_titles = []
+
+        book_links = @episode_doc.css(".description.prose>strong~a")
+
+        book_links.map do |link|
+            book_titles << link.text
+        end
+
+        description = @description.split(book_titles[0]).pop.to_s
+
+        books = []
+
+        book_titles.map.with_index do |title, i|
+          unless i + 1 == book_titles.length
+            description = description.split(book_titles[i+1 || i])
+            author = description[0]
+
+            books << "#{title}#{author}"
+
+            description = description.pop
+
+          else
+
+            books << "#{title}#{description}"
+
+          end
+
+        end
+
+        books 
+
+    end
+
+    def parse_without_links(episode)
+        after_books = @description.split(/(B|b)ooks:\s/)[-1]
+        books = after_books.split("Notes from our sponsors")[0]
+        book_array = books.strip.split(/by(\s[A-Z][a-zA-Z]*\s?a?n?d?\s?[A-Z]?[a-zA-Z]*)/)
+
+        book_queries = []
+
+        book_array.map.with_index do |item, i|
+            if i.even?
+                book_queries << "#{item.strip} #{book_array[i+1]}"
+            end
+        end
+
+        book_queries
+
+      end
 
   end
 

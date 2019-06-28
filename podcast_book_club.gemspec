@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "pry", "~> 0.12.2"
 
   spec.add_dependency "nokogiri", "~> 1.6", ">= 1.6.8"
+  spec.add_dependency "googlebooks", "~> 0.0.9"
 end

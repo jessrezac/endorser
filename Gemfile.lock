@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     podcast-book-club (0.1.0)
+      googlebooks (~> 0.0.9)
       nokogiri (~> 1.6, >= 1.6.8)
 
 GEM
@@ -9,8 +10,17 @@ GEM
   specs:
     coderay (1.1.2)
     diff-lcs (1.3)
+    googlebooks (0.0.9)
+      httparty
+    httparty (0.17.0)
+      mime-types (~> 3.0)
+      multi_xml (>= 0.5.2)
     method_source (0.9.2)
+    mime-types (3.2.2)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2019.0331)
     mini_portile2 (2.4.0)
+    multi_xml (0.6.0)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
     pry (0.12.2)
@@ -42,4 +52,4 @@ DEPENDENCIES
   rspec (~> 3.0)
 
 BUNDLED WITH
-   2.0.1
+   2.0.2
