@@ -2,6 +2,7 @@ require "pry"
 require "date"
 require "nokogiri"
 require "open-uri"
+require "googlebooks"
 
 require_relative '../lib/podcast_book_club/book'
 require_relative '../lib/podcast_book_club/cli'

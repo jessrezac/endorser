@@ -4,7 +4,7 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
-        build_books(Episode.all[5])
+        build_books(Episode.all[7])
     end
 
     def fetch_episodes(path)
@@ -30,21 +30,33 @@ class Scraper
 
     def build_books(episode)
       describe_episode(episode)
-      choose_parser(episode)
-      
-      unless @episode_doc.css(".description.prose>strong~a") == []
-        book_queries = parse_with_links(episode)
-      else
-        book_queries = parse_without_links()
+      queries = send_to_parser(episode)
+
+      queries.each do |query|
+        google_book_search = GoogleBooks.search(query)
+        result = google_book_search.first
+
+        url = result.info_link
+        title = result.title
+        author = result.authors_array
+        genre = result.categories
+        synopsis = result.description
+        book_episode = episode
+        
+        Book.new({
+          url: url,
+          title: title,
+          author: author,
+          genre: genre,
+          synopsis: synopsis,
+          episode: episode
+        })
+  
       end
 
       binding.pry
+
     end
-
-
-
-
-    private
 
     def build_path
         snapshot_date = Date.new(2019,6,25)
@@ -61,10 +73,19 @@ class Scraper
       @description = @episode_doc.css(".story .description").text
     end
 
-    def choose_parser(episode)
-      books_method = Date.new(2008, 12, 22)
-      recommended_method = Date.new()
-      recommendations_method = Date.new(2019, 1, 14)
+    def send_to_parser(episode)
+      today = Date.today
+      with_links = Date.new(2019, 1, 14)
+      without_links = Date.new(2017, 3, 28)
+
+      case episode.date
+      when (with_links..today)
+        parse_with_links(episode)
+      when (without_links...with_links)
+        parse_without_links(episode)
+      else 
+        puts "This episode has no recommendations."
+      end
 
     end
 
@@ -98,11 +119,11 @@ class Scraper
 
         end
 
-        binding.pry
+        books 
 
     end
 
-    def parse_without_links
+    def parse_without_links(episode)
         after_books = @description.split(/(B|b)ooks:\s/)[-1]
         books = after_books.split("Notes from our sponsors")[0]
         book_array = books.strip.split(/by(\s[A-Z][a-zA-Z]*\s?a?n?d?\s?[A-Z]?[a-zA-Z]*)/)
@@ -116,7 +137,8 @@ class Scraper
         end
 
         book_queries
-    end
+
+      end
 
   end
 
