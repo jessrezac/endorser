@@ -4,6 +4,7 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
+        build_books(Episode.all[10])
     end
 
     def fetch_episodes(path)
@@ -29,7 +30,7 @@ class Scraper
     def build_books(episode)
       describe_episode(episode)
 
-      if @description.downcase.include?("books")
+      if @description.include?("books")
         queries = send_to_parser(episode)
 
         queries.each do |query|
@@ -119,15 +120,18 @@ class Scraper
 
         end
 
+        binding.pry
+
         books 
 
     end
 
     def parse_without_links(episode)
 
-        book_block = @description.split(/(B|b)ooks(\sand essays)?:\s/)[-1].split("Notes from our sponsors")[0].split(/Find.*ART19/)[0]
+        book_block = @description.split(/(B|b)ooks:\s/)[-1].split("Notes from our sponsors")[0].split(/Find.*ART19/)[0]
 
-        book_array = book_block.strip.split(/\sby(\s[A-Z][a-zA-Z]*[\s{1}][a-z]*\s?[A-Z]?[.a-zA-Z]*(?<![a-z])\s?[A-Z]?[.a-zA-Z]*)/)
+        reg_ex = /\sby(\s[A-Z][a-zA-Z]*[\s{1}][a-z]*\s?[A-Z]?[.a-zA-Z]*(?<![a-z])\s?[A-Z]?[.a-zA-Z]*)/
+        book_array = book_block.strip.split(reg_ex)
 
         book_queries = []
 
@@ -138,6 +142,9 @@ class Scraper
         end
 
         book_queries
+
+        binding.pry
+
 
       end
 
