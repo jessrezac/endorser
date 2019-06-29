@@ -28,6 +28,7 @@ class PodcastBookClub::CLI
             when "create library"
                 Episode.all.each do |episode|
                     @scraper.build_books(episode) rescue binding.pry
+                                        
                 end
 
                 binding.pry

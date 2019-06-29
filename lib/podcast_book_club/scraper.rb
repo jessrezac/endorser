@@ -4,7 +4,6 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
-        build_books(Episode.all[74])
     end
 
     def fetch_episodes(path)
@@ -30,18 +29,18 @@ class Scraper
     def build_books(episode)
       describe_episode(episode)
 
-      if @description.include?("Books") || @description.include?("books")
+      if @description.downcase.include?("books")
         queries = send_to_parser(episode)
 
         queries.each do |query|
           google_book_search = GoogleBooks.search(query)
           result = google_book_search.first
 
-          url = result.info_link
-          title = result.title
-          author = result.authors_array
-          genre = result.categories
-          synopsis = result.description
+          url = result.info_link unless result.info_link.nil?
+          title = result.title  unless result.title.nil?
+          author = result.authors_array unless result.authors_array.nil?
+          genre = result.categories unless result.categories.nil?
+          synopsis = result.description unless result.description.nil?
           book_episode = episode
           
           Book.new({
@@ -125,10 +124,10 @@ class Scraper
     end
 
     def parse_without_links(episode)
-        book_block = @description.split(/(B|b)ooks:\s/)[-1]
-        book_block = book_block.split("Notes from our sponsors")[0]
-        books = book_block.split(/Find.*ART19/)[0]
-        book_array = books.strip.split(/by(\s[A-Z][a-zA-Z]*\s?a?n?d?\s?[A-Z]?[.a-zA-Z]*\s?[A-Z]?[.a-zA-Z]*)/)
+
+        book_block = @description.split(/(B|b)ooks(\sand essays)?:\s/)[-1].split("Notes from our sponsors")[0].split(/Find.*ART19/)[0]
+
+        book_array = book_block.strip.split(/\sby(\s[A-Z][a-zA-Z]*[\s{1}][a-z]*\s?[A-Z]?[.a-zA-Z]*(?<![a-z])\s?[A-Z]?[.a-zA-Z]*)/)
 
         book_queries = []
 
