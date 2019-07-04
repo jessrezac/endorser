@@ -6,11 +6,7 @@ class Episode
   def initialize(attributes)
 
     attributes.each do |k, v|
-        if "#{k}" == "date"
-            self.date = Date.strptime(v)
-        else
-            self.send("#{k}=", v)
-        end
+      self.send("#{k}=", v)
     end
 
     @@all << self

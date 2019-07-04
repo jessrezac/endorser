@@ -1,10 +1,10 @@
 require_relative "../podcast_book_club.rb"
 
 class Scraper
+  
     def initialize
         path = build_path
         fetch_episodes(path)
-        build_books(Episode.all[7])
     end
 
     def fetch_episodes(path)
@@ -16,42 +16,45 @@ class Scraper
       episodes.each do |episode|
         title = episode.css(".info-top a").text.strip
         link = "https://player.fm#{episode.css(".info-top a").attribute("href").value}"
-        date = episode.css(".timeago").attribute("datetime").value
-        date.slice!(/T.+/)
-
+        date = Date.strptime(episode.css(".timeago").attribute("datetime").value)
+    
         attributes = {
             title: title,
             link: link,
-            date: date}
+            date: date
+        }
 
         Episode.new(attributes)
       end
+
     end
 
     def build_books(episode)
       describe_episode(episode)
-      queries = send_to_parser(episode)
 
-      queries.each do |query|
-        google_book_search = GoogleBooks.search(query)
-        result = google_book_search.first
+      if @description.match?(/\b(B|b)ook/)
+        queries = send_to_parser(episode)
 
-        url = result.info_link
-        title = result.title
-        author = result.authors_array
-        genre = result.categories
-        synopsis = result.description
-        book_episode = episode
-        
-        Book.new({
-          url: url,
-          title: title,
-          author: author,
-          genre: genre,
-          synopsis: synopsis,
-          episode: episode
-        })
-  
+        queries.each do |query|
+          google_book_search = GoogleBooks.search(query, {:api_key => 'AIzaSyAQeKqyYWmxAAEWhYUVNDd3EcOCQ2CgS8Q'} )
+          result = google_book_search.first
+
+          url = result.info_link unless result.info_link.nil? rescue binding.pry
+          title = result.title  unless result.title.nil?
+          author = result.authors_array unless result.authors_array.nil?
+          genre = result.categories unless result.categories.nil?
+          synopsis = result.description unless result.description.nil?
+          book_episode = episode
+
+          Book.new({
+            url: url,
+            title: title,
+            author: author,
+            genre: genre,
+            synopsis: synopsis,
+            episode: episode
+          })
+        end
       end
 
     end
@@ -90,10 +93,12 @@ class Scraper
     def parse_with_links(episode)
         book_titles = []
 
-        book_links = @episode_doc.css(".description.prose>strong~a")
+        book_links = @episode_doc.css(".description.prose > a")
 
         book_links.map do |link|
-            book_titles << link.text
+            if link.attribute("href").value.include?("amazon")
+              book_titles << link.text
+            end
         end
 
         description = @description.split(book_titles[0]).pop.to_s
@@ -111,7 +116,7 @@ class Scraper
 
           else
 
-            books << "#{title}#{description}"
+            books << "#{title}#{description[0]}"
 
           end
 
@@ -122,9 +127,11 @@ class Scraper
     end
 
     def parse_without_links(episode)
-        after_books = @description.split(/(B|b)ooks:\s/)[-1]
-        books = after_books.split("Notes from our sponsors")[0]
-        book_array = books.strip.split(/by(\s[A-Z][a-zA-Z]*\s?a?n?d?\s?[A-Z]?[a-zA-Z]*)/)
+        book_block = @description.split(/(B|b)ooks:?\s/)[-1]
+        book_block = book_block.split("Notes from our sponsors")[0]
+        books = book_block.split(/Find.*ART19/)[0]
+
+        book_array = books.strip.split(/\sby(\s[A-Z]\w*\s[a-z]*\s?[A-Z][.\w]*(?<![a-z])\s?[A-Z]?[.a-zA-Z]*)/)
 
         book_queries = []
 
