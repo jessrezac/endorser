@@ -32,14 +32,14 @@ class Scraper
     def build_books(episode)
       describe_episode(episode)
 
-      if @description.include?("book") || @description.include?("Book")
+      if @description.match?(/\b(B|b)ook/)
         queries = send_to_parser(episode)
 
         queries.each do |query|
           google_book_search = GoogleBooks.search(query, {:api_key => 'AIzaSyAQeKqyYWmxAAEWhYUVNDd3EcOCQ2CgS8Q'} )
           result = google_book_search.first
 
-          url = result.info_link unless result.info_link.nil?
+          url = result.info_link unless result.info_link.nil? rescue binding.pry
           title = result.title  unless result.title.nil?
           author = result.authors_array unless result.authors_array.nil?
           genre = result.categories unless result.categories.nil?
@@ -127,7 +127,7 @@ class Scraper
     end
 
     def parse_without_links(episode)
-        book_block = @description.split(/(B|b)ooks:\s/)[-1]
+        book_block = @description.split(/(B|b)ooks:?\s/)[-1]
         book_block = book_block.split("Notes from our sponsors")[0]
         books = book_block.split(/Find.*ART19/)[0]
 
