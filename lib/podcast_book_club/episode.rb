@@ -1,6 +1,9 @@
 class Episode
   attr_accessor :title, :link, :description, :date
 
+  extend Memorable::ClassMethods
+  include Memorable::InstanceMethods
+
   @@all = []
 
   def initialize(attributes)

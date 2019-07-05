@@ -147,4 +147,3 @@ class Scraper
 
   end
 
-Scraper.new
