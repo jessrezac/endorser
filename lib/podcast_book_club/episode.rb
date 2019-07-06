@@ -2,6 +2,7 @@ class Episode
   attr_accessor :title, :link, :description, :date
 
   extend Memorable::ClassMethods
+  extend Findable::ClassMethods
   include Memorable::InstanceMethods
 
   @@all = []

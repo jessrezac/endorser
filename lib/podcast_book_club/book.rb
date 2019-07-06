@@ -2,6 +2,7 @@ class Book
     attr_accessor :url, :title, :author, :genre, :episode, :synopsis
 
     extend Memorable::ClassMethods
+    extend Findable::ClassMethods
     include Memorable::InstanceMethods  
 
     @@all = []
