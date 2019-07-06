@@ -24,7 +24,7 @@ class Scraper
             date: date
         }
 
-        Episode.new(attributes)
+        Episode.create(attributes)
       end
 
     end

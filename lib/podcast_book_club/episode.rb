@@ -12,8 +12,6 @@ class Episode
       self.send("#{k}=", v)
     end
 
-    @@all << self
-
   end
 
   def self.all

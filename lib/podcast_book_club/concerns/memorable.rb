@@ -11,11 +11,17 @@ module Memorable
     module ClassMethods
 
         def destroy_all
-            self.all = []
+            self.all.clear
         end
 
         def count
             self.all.count 
+        end
+
+        def create(attributes)
+            instance = self.new(attributes)
+            instance.save
+            instance
         end
 
     end
