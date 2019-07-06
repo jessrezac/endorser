@@ -24,7 +24,7 @@ class Scraper
             date: date
         }
 
-        Episode.new(attributes)
+        Episode.create(attributes)
       end
 
     end
@@ -46,7 +46,7 @@ class Scraper
           synopsis = result.description unless result.description.nil?
           book_episode = episode
 
-          Book.new({
+          Book.create({
             url: url,
             title: title,
             author: author,
@@ -147,4 +147,3 @@ class Scraper
 
   end
 
-Scraper.new

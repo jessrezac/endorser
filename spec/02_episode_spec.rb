@@ -69,7 +69,7 @@ RSpec.describe "Episode" do
       it "adds the Book instance to the @@all class variable" do
         episode.save
   
-        expect(Episode.all).to include(book)
+        expect(Episode.all).to include(episode)
       end
     end
   

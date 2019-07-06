@@ -1,6 +1,9 @@
 class Episode
   attr_accessor :title, :link, :description, :date
 
+  extend Memorable::ClassMethods
+  include Memorable::InstanceMethods
+
   @@all = []
 
   def initialize(attributes)
@@ -8,8 +11,6 @@ class Episode
     attributes.each do |k, v|
       self.send("#{k}=", v)
     end
-
-    @@all << self
 
   end
 
