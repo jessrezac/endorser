@@ -1,35 +1,43 @@
 require "spec_helper"
 
-RSpec.describe "Concerns::Findable" do
-  it "defines a module named Concerns::Findable" do
-    expect(defined?(Concerns::Findable)).to be_truthy
-    expect(Concerns::Findable).to_not be_a(Class)
-    expect(Concerns::Findable).to be_a(Module)
+RSpec.describe "Findable" do
+  it "defines a module named Findable" do
+    expect(defined?(Findable)).to be_truthy
+    expect(Findable).to_not be_a(Class)
+    expect(Findable).to be_a(Module)
   end
 end
 
 RSpec.describe "Books" do
-    it "extends the Concerns::Findable module" do
-        book_extends_concerns_findable = Book.singleton_class.ancestors.include?(Concerns::Findable)
-        expect(book_extends_concerns_findable).to be(true)
+    it "extends the Findable module" do
+        book_extends_findable = Book.singleton_class.ancestors.include?(Findable::ClassMethods)
+        expect(book_extends_findable).to be(true)
     end
 end
 
+RSpec.describe "Episode" do
+  it "extends the Findable module" do
+    episode_extends_findable = Episode.singleton_class.ancestors.include?(Findable::ClassMethods)
+    expect(episode_extends_findable).to be(true)
+  end
+end
+
+
 RSpec.describe "Author" do
-  it "extends the Concerns::Findable module" do
-    author_extends_concerns_findable = Author.singleton_class.ancestors.include?(Concerns::Findable)
-    expect(author_extends_concerns_findable).to be(true)
+  it "extends the Findable module" do
+    author_extends_findable = Author.singleton_class.ancestors.include?(Findable::ClassMethods)
+    expect(author_extends_findable).to be(true)
   end
 end
 
 RSpec.describe "Genre" do
-  it "extends the Concerns::Findable module" do
-    genre_extends_concerns_findable = Genre.singleton_class.ancestors.include?(Concerns::Findable)
-    expect(genre_extends_concerns_findable).to be(true)
+  it "extends the Findable module" do
+    genre_extends_findable = Genre.singleton_class.ancestors.include?(Findable::ClassMethods)
+    expect(genre_extends_findable).to be(true)
   end
 end
 
-RSpec.describe "Concerns::Findable" do
+RSpec.describe "Findable" do
   let!(:book_one) { Book.create({title: "The Great Gatsby"}) }
   let!(:book_two) { Book.create({title: "The Old Man and The Sea"}) }
   let!(:author_one) { Author.create({name:"F. Scott Fitzgerald"}) }
