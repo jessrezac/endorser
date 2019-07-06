@@ -5,7 +5,7 @@ module Findable
         end
 
         def find_by_title(title)
-            self.all.detect {|i| i.title.include?(title)}
+            self.all.detect {|i| i.title.downcase.include?(title.downcase)}
         end
 
         def find_or_create_by_name(attributes)
