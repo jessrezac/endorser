@@ -30,14 +30,6 @@ RSpec.describe "Associations — Episode and Book:" do
   end
 
   context "Book" do
-    describe "#initialize" do
-      it "can be invoked with an optional second argument, an Episode object to be assigned to the book's 'episode' property (book belongs to episode)" do
-        book_with_episode = Book.new("Alice In Wonderland", episode)
-
-        expect(book_with_episode.instance_variable_defined?(:@episode)).to be(true)
-        expect(book_with_episode.instance_variable_get(:@episode)).to be(episode)
-      end
-    end
 
     describe "#episode" do
       it "returns the episode of the book (book belongs to episode)" do

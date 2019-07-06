@@ -12,7 +12,6 @@ class Author
       @name = name
       @books = []
       
-  
     end
   
     def self.all

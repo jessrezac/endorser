@@ -1,5 +1,5 @@
 class Episode
-  attr_accessor :title, :link, :description, :date
+  attr_accessor :title, :link, :description, :date, :books
 
   extend Memorable::ClassMethods
   extend Findable::ClassMethods
@@ -13,10 +13,18 @@ class Episode
       self.send("#{k}=", v)
     end
 
+    @books = []
+
   end
 
   def self.all
     @@all
   end
+
+  def add_book(book)
+    self.books << book
+    books
+  end
+
 
 end
