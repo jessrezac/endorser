@@ -1,12 +1,13 @@
 class Book
     attr_accessor :url, :title, :author, :genre, :episode, :synopsis
 
+    extend Memorable::ClassMethods
+    include Memorable::InstanceMethods  
+
     @@all = []
 
     def initialize(attributes)
         attributes.each {|k,v| self.send("#{k}=", v)}
-        @@all << self
-
     end
 
     def self.all
@@ -23,7 +24,7 @@ class Book
 
         attributes = {genre: genre, title: title, author: author}
 
-        Book.new(attributes)
+        Book.create(attributes)
 
     end
 

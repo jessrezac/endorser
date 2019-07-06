@@ -46,7 +46,7 @@ class Scraper
           synopsis = result.description unless result.description.nil?
           book_episode = episode
 
-          Book.new({
+          Book.create({
             url: url,
             title: title,
             author: author,
