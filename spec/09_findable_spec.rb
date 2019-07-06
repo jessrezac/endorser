@@ -50,14 +50,20 @@ RSpec.describe "Findable" do
       expect(Author).to respond_to(:find_by_name)
     end
 
-    context "works exactly like a generic version of Book.find_by_name," do
-      it "searching the extended class's @@all variable for an instance that matches the provided name" do
-        expect(Author.find_by_name("Ernest Hemingway")).to be(author_two)
-      end
+    it "searches the extended class's @@all variable for an instance that matches the provided name" do
+      expect(Author.find_by_name("Ernest Hemingway")).to be(author_two)
     end
 
-    it "isn't hard-coded" do
-      expect(Genre.find_by_name("romance")).to be(genre_two)
+  end
+
+
+  describe ".find_by_title" do
+    it "is added as a class method to classes that extend the module" do
+      expect(Book).to respond_to(:find_by_title)
+    end
+
+    it "searches the extended class's @@all variable for an instance that matches the provided name" do
+      expect(Book.find_by_title("The Old Man and The Sea")).to be(book_two)
     end
   end
 
@@ -66,24 +72,19 @@ RSpec.describe "Findable" do
       expect(Author).to respond_to(:find_or_create_by_name)
     end
 
-    context "works exactly like a generic version of Book.find_or_create_by_name:" do
-      it "finds (does not recreate) an existing instance with the provided name if one exists in @@all" do
-        expect(Author.find_or_create_by_name("Ernest Hemingway")).to be(author_two)
-      end
-
-      it "isn't hard-coded" do
-        expect(Genre.find_or_create_by_name("romance")).to be(genre_two)
-      end
-
-      it "invokes .find_by_name instead of re-coding the same functionality" do
-        expect(Author).to receive(:find_by_name)
-        Author.find_or_create_by_name("Ernest Hemingway")
-      end
-
-      it "invokes the extended class's .create method, passing in the provided name, if an existing match is not found" do
-        expect(Author).to receive(:create)
-        Author.find_or_create_by_name("Gloria Steinem")
-      end
+    it "finds (does not recreate) an existing instance with the provided name if one exists in @@all" do
+      expect(Author.find_or_create_by_name("Ernest Hemingway")).to be(author_two)
     end
+
+    it "invokes .find_by_name instead of re-coding the same functionality" do
+      expect(Author).to receive(:find_by_name)
+      Author.find_or_create_by_name("Ernest Hemingway")
+    end
+
+    it "invokes the extended class's .create method, passing in the provided name, if an existing match is not found" do
+      expect(Author).to receive(:create)
+      Author.find_or_create_by_name("Gloria Steinem")
+    end
+    
   end
 end
