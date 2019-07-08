@@ -30,7 +30,7 @@ RSpec.describe "Associations — Books and Genres:" do
         book_with_artist_and_genre = Book.new({title: "The Great Gatsby", author: author, genre: genre})
 
         expect(book_with_artist_and_genre.instance_variable_defined?(:@genre)).to be(true)
-        expect(book_with_artist_and_genre.instance_variable_get(:@genre)).to be(genre)
+        expect(book_with_artist_and_genre.instance_variable_get(:@genre)).to include(genre)
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe "Associations — Books and Genres:" do
       it "assigns a genre to the book (book belongs to genre)" do
         book.genre = genre
 
-        expect(book.genre).to be(genre)
+        expect(book.genre).to include(genre)
       end
 
       it "adds the book to the genre's collection of books (genre has many books)" do

@@ -3,16 +3,16 @@ class Book
 
     extend Memorable::ClassMethods
     extend Findable::ClassMethods
-    include Memorable::InstanceMethods  
+    include Memorable::InstanceMethods
 
     @@all = []
 
     def initialize(attributes)
         @episode = []
-        attributes.each do |k,v| 
+        attributes.each do |k,v|
             self.send("#{k}=", v)
         end
-        
+
     end
 
     def self.all
@@ -20,7 +20,13 @@ class Book
     end
 
     def episode=(episode)
+        @episode ||= []
         episode.add_book(self)
+    end
+
+    def genre=(genre)
+        @genre ||= []
+        genre.add_book(self)
     end
 
 end
