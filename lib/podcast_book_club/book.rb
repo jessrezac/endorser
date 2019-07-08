@@ -8,11 +8,19 @@ class Book
     @@all = []
 
     def initialize(attributes)
-        attributes.each {|k,v| self.send("#{k}=", v)}
+        @episode = []
+        attributes.each do |k,v| 
+            self.send("#{k}=", v)
+        end
+        
     end
 
     def self.all
         @@all
+    end
+
+    def episode=(episode)
+        episode.add_book(self)
     end
 
 end

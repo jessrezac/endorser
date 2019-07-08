@@ -45,7 +45,7 @@ RSpec.describe "Associations — Episode and Book:" do
 
         assigned_episode = book.instance_variable_get(:@episode)
 
-        expect(assigned_episode).to be(episode)
+        expect(assigned_episode).to include(episode)
       end
     end
   end
@@ -55,16 +55,7 @@ RSpec.describe "Associations — Episode and Book:" do
       it "assigns the current episode to the book's 'episode' property (book belongs to episode)" do
         episode.add_book(book)
 
-        expect(book.episode).to be(episode)
-      end
-
-      # SHOULD THIS ALLOW IT TO ASSIGN MULTIPLE EPISODES
-      it "does not assign the episode if the book already has an episode" do
-        book.instance_variable_set(:@episode, episode)
-
-        expect(book).to_not receive(:episode=)
-
-        episode.add_book(book)
+        expect(book.episode).to include(episode)
       end
 
       it "adds the book to the current episode's 'books' collection" do
