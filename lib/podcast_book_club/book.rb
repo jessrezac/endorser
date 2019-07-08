@@ -8,7 +8,6 @@ class Book
     @@all = []
 
     def initialize(attributes)
-        @episode = []
         attributes.each do |k,v|
             self.send("#{k}=", v)
         end
