@@ -24,4 +24,8 @@ class Genre
         books
     end
 
+    def authors
+      @books.map { |book| book.author }.flatten.uniq
+    end
+
   end
