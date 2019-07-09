@@ -1,8 +1,8 @@
 require "spec_helper"
 
 RSpec.describe "Associations — Author and Genre:" do
-  let(:genre) { Genre.new({name: "fiction"}) }
-  let(:other_genre) { Genre.new({name: "romance"}) }
+  let(:genre) { Genre.new("fiction") }
+  let(:other_genre) { Genre.new("romance") }
   let(:author) { Author.new({name: "F. Scott Fitzgerald"}) }
   let(:other_author) { Author.new({name: "Ernest Hemingway"}) }
 
@@ -10,7 +10,7 @@ RSpec.describe "Associations — Author and Genre:" do
     describe "#genres" do
       it "returns a collection of genres for all of the author's books (author has many genres through books)" do
         Book.new({title: "The Great Gatsby", author: author, genre: genre})
-        Book.new({title: "Tender Is The Night", author: author, genre: genre})
+        Book.new({title: "Tender Is The Night", author: author, genre: other_genre})
 
         expect(author.genres).to include(genre)
         expect(author.genres).to include(other_genre)

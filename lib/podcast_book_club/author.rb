@@ -25,8 +25,7 @@ class Author
     end
 
     def genres
-            binding.pry
-        self.books.map { |book| book.genre }.uniq
+        @books.map { |book| book.genre }.flatten.uniq
     end
 
   end
