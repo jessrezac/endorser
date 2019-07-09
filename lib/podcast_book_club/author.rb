@@ -8,18 +8,20 @@ class Author
     @@all = []
 
     def initialize(attributes)
+        @books = []
+
         attributes.each do |k,v|
             self.send("#{k}=", v)
         end
+
     end
 
     def self.all
       @@all
     end
 
-    def book=(book)
-        @books ||= []
-        @books << book
+    def books=(book)
+        @books << book unless @books.include?(book)
     end
 
     def genres
