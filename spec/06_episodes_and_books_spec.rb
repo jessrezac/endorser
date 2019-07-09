@@ -6,9 +6,9 @@ RSpec.describe "Associations — Episode and Book:" do
         date: "10/31/2019",
         link: "http://player.fm/the-ezra-klein-show"}) }
     let(:book) { Book.new({title: "The Great Gatsby", 
-        author: "F. Scott Fitzgerald", 
+        author: Author.new({name: "F. Scott Fitzgerald"}), 
         synopsis: "The description of the book",
-        genre: "fiction"}) }
+        genre: Genre.new("fiction")}) }
 
   context "Episode" do
     describe "#initialize" do
