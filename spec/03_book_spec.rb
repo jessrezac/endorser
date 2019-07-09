@@ -1,11 +1,14 @@
 require "spec_helper"
 
 RSpec.describe "Book" do
+    let(:episode) { Episode.new({title: "An Ezra Klein Show Episode"})}
+    let(:author) { Author.new({name:"F. Scott Fitzgerald"})}
+    let(:genre) { Genre.new("fiction")}
     let(:book) { Book.new({title: "The Great Gatsby", 
-      author: "F. Scott Fitzgerald", 
+      author: author, 
       synopsis: "The description of the book",
-      genre: "fiction",
-      episode: "An Ezra Klein Show Episode"}) }
+      genre: genre,
+      episode: episode}) }
   
   
     describe "#initialize" do
