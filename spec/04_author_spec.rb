@@ -1,11 +1,11 @@
 require "spec_helper"
 
 RSpec.describe "Author" do
-    let(:author) { Author.new("Thomas Piketty") }
+    let(:author) { Author.new({name:"Thomas Piketty"}) }
   
     describe "#initialize" do
       it "accepts a name for the new author" do
-        new_author = Author.new("Tim Ferris")
+        new_author = Author.new({name: "Tim Ferris"})
   
         new_author_name = new_author.instance_variable_get(:@name)
   
@@ -67,7 +67,7 @@ RSpec.describe "Author" do
   
     describe ".create" do
       it "initializes and saves the author" do
-        created_author = Author.create("Margaret Atwood")
+        created_author = Author.create({name:"Margaret Atwood"})
   
         expect(Author.all).to include(created_author)
       end

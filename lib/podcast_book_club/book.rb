@@ -24,13 +24,19 @@ class Book
         episode.add_book(self)
     end
 
-    def author=(author_array)
-        # start here, need to allow for book to receive author as array
+    def author=(author)
         @author ||= []
-        author_array.each do |author|
+
+        if author.kind_of?(Array)
+            author.each do |a|
+                @author << a
+                a.books = self
+            end
+        else
             @author << author
             author.books = self
         end
+
     end
 
     def genre=(genre)

@@ -44,9 +44,9 @@ RSpec.describe "Associations — Books and Authors:" do
 
     describe "#author" do
       it "returns the author of the book (book belongs to author)" do
-        book.instance_variable_set(:@author, author)
+        book.instance_variable_set(:@author, [author])
 
-        expect(book.author).to be(author)
+        expect(book.author).to include(author)
       end
     end
 
