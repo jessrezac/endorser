@@ -5,7 +5,7 @@ class PodcastBookClub::CLI
     end
 
     def call
-        puts "                          _               _     _                 _           _       _     
+        puts "                         _               _     _                 _           _       _     
          _ __   ___   __| | ___ __ _ ___| |_  | |__   ___   ___ | | __   ___| |_   _| |__  
         | '_ \\ / _ \\ / _` |/ __/ _` / __| __| | '_ \\ / _ \\ / _ \\| |/ /  / __| | | | | '_ \\ 
         | |_) | (_) | (_| | (_| (_| \\__ \\ |_  | |_) | (_) | (_) |   <  | (__| | |_| | |_) |
@@ -63,7 +63,7 @@ class PodcastBookClub::CLI
 
                 when "6" || "search" || "6. search by keyword"
                     puts "Enter a keyword or phrase:"
-                    keyword = gets.chomp
+                    keyword = gets.chomp.downcase
                     episodes = Episode.find_by_keyword(keyword)
                     puts "I have found #{episodes.count} episode(s).\n\n"
                     episodes.map.with_index { |episode, i| puts "#{i} - #{episode.title} - #{episode.date}" }
