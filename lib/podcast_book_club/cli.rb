@@ -131,7 +131,6 @@ class PodcastBookClub::CLI
     end
 
     def puts_episodes(episodes)
-        binding.pry
         puts "I have found #{episodes.count} episode(s).\n\n"
         episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
     end
