@@ -19,5 +19,9 @@ module Findable
             instance = self.find_by_title(title) || self.create(attributes)
             instance
         end
+
+        def find_by_keyword(keyword)
+            self.all.select { |instance| instance.title.include?(keyword) }
+        end
     end
 end
