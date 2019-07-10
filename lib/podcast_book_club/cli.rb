@@ -94,7 +94,11 @@ class PodcastBookClub::CLI
             selection = gets.chomp.downcase
 
         when "5", "this year", "5. this year"
-            puts "I'm listing episodes from this year"
+            first_date = @today - @today.yday + 1
+            episodes = Episode.find_by_date(first_date, @today)
+
+            puts_episodes(episodes)
+
             selection = gets.chomp.downcase
 
         when "6", "search", "6. search by keyword"
@@ -127,6 +131,7 @@ class PodcastBookClub::CLI
     end
 
     def puts_episodes(episodes)
+        binding.pry
         puts "I have found #{episodes.count} episode(s).\n\n"
         episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
     end
