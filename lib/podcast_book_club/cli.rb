@@ -45,6 +45,8 @@ class PodcastBookClub::CLI
     end
 
     def list_episodes
+        @today = Date.today
+
         puts "\n\nChoose a timeframe to list episodes:"
         puts "1. 'this week'"
         puts "2. 'last week'"
@@ -58,31 +60,37 @@ class PodcastBookClub::CLI
 
         case selection
         when "1", "this week", "1. this week"
-            today = Date.today
-            first_date = today - today.wday
-            episodes = Episode.find_by_date(first_date, today)
+            first_date = @today - @today.wday
+            episodes = Episode.find_by_date(first_date, @today)
 
             puts_episodes(episodes)
 
             selection = gets.chomp.downcase
 
         when "2", "last week", "2. last week"
-            today = Date.today
-            first_date = today - today.wday - 7
-            last_date = today - today.wday
+            first_date = @today - @today.wday - 7
+            last_date = @today - @today.wday
             episodes = Episode.find_by_date(first_date, last_date)
 
             puts_episodes(episodes)
 
-            puts "I'm listing episodes from last week"
             selection = gets.chomp.downcase
 
         when "3", "this month", "3. this month"
-            puts "I'm listing episodes from this month"
+            first_date = @today - @today.mday + 1
+            episodes = Episode.find_by_date(first_date, @today)
+
+            puts_episodes(episodes)
+            
             selection = gets.chomp.downcase
 
         when "4", "last month", "4. last month"
-            puts "I'm listing episodes from last month"
+            last_date = @today - @today.mday
+            first_date = last_date - last_date.mday + 1
+            episodes = Episode.find_by_date(first_date, last_date)
+
+            puts_episodes(episodes)
+
             selection = gets.chomp.downcase
 
         when "5", "this year", "5. this year"
