@@ -37,13 +37,15 @@ RSpec.describe "Genre" do
   end
 end
 
-RSpec.describe "Findable" do
+RSpec.describe "Findable Classes" do
+
   let!(:book_one) { Book.create({title: "The Great Gatsby"}) }
   let!(:book_two) { Book.create({title: "The Old Man and The Sea"}) }
   let!(:author_one) { Author.create({name:"F. Scott Fitzgerald"}) }
   let!(:author_two) { Author.create({name:"Ernest Hemingway"}) }
-  let!(:genre_one) { Genre.create({name:"fiction"}) }
-  let!(:genre_two) { Genre.create({name:"romance"}) }
+  let!(:genre_one) { Genre.create("fiction") }
+  let!(:genre_two) { Genre.create("romance") }
+
 
   describe ".find_by_name" do
     it "is added as a class method to classes that extend the module" do
