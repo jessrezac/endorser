@@ -24,15 +24,17 @@ class Book
         episode.add_book(self)
     end
 
-    def author=(author)
+    def author=(authors)
         @author ||= []
 
-        if author.kind_of?(Array)
-            author.each do |a|
-                @author << a
-                a.books = self
+        if authors.kind_of?(Array)
+            authors.each do |a|
+                author = Author.find_or_create_by_name(a)
+                @author << author
+                author.books << self
             end
         else
+            author = Author.find_or_create_by_name(authors)
             @author << author
             author.books = self
         end
@@ -41,7 +43,9 @@ class Book
 
     def genre=(genre)
         @genre ||= []
-        genre.add_book(self)
+
+        new_genre = Genre.find_or_create_by_name(genre)
+        new_genre.add_book(self)
     end
 
 end

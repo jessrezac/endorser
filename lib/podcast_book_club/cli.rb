@@ -34,7 +34,7 @@ class PodcastBookClub::CLI
                 list_episodes
 
             when "create library"
-                create_library
+                create_library(Episode.all)
             else
                 unexpected_input
                 @input = gets.chomp.downcase
@@ -65,7 +65,8 @@ class PodcastBookClub::CLI
 
             puts_episodes(episodes)
 
-            selection = gets.chomp.downcase
+            puts "Enter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
+            option_3 = gets.chomp.downcase
 
         when "2", "last week", "2. last week"
             first_date = @today - @today.wday - 7
@@ -118,10 +119,9 @@ class PodcastBookClub::CLI
         end
     end
 
-    def create_library
-        Episode.all.each do |episode|
-            @scraper.build_books(episode) rescue binding.pry
-                                
+    def create_library(episodes)
+        episodes.each do |episode|
+            @scraper.build_books(episode) rescue binding.pry                     
         end
     end
 
@@ -134,6 +134,5 @@ class PodcastBookClub::CLI
         puts "I have found #{episodes.count} episode(s).\n\n"
         episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
     end
-
 
 end
