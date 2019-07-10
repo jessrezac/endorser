@@ -27,71 +27,85 @@ class PodcastBookClub::CLI
         puts "What would you like to do?"
         input = gets.chomp.downcase
 
-        until input == "exit"
+        until @input == "exit"
 
-            case input
+            case @input
             when "list episodes"
-                puts "\n\nChoose a timeframe to list episodes:"
-                puts "1. 'this week'"
-                puts "2. 'last week'"
-                puts "3. 'this month'"
-                puts "4. 'last month'"
-                puts "5. 'this year'"
-                puts "6. 'search' by keyword"
-                timeframe = gets.chomp.downcase
-
-                case timeframe
-                when "1" || "this week" || "1. this week"
-                    puts "I'm listing episodes from this week"
-                    timeframe = gets.chomp.downcase
-
-                when "2" || "last week" || "2. last week"
-                    puts "I'm listing episodes from last week"
-                    timeframe = gets.chomp.downcase
-
-                when "3" || "this month" || "3. this month"
-                    puts "I'm listing episodes from this month"
-                    timeframe = gets.chomp.downcase
-
-                when "4" || "last month" || "4. last month"
-                    puts "I'm listing episodes from last month"
-                    timeframe = gets.chomp.downcase
-
-                when "5" || "this year" || "5. this year"
-                    puts "I'm listing episodes from this year"
-                    timeframe = gets.chomp.downcase
-
-                when "6" || "search" || "6. search by keyword"
-                    puts "Enter a keyword or phrase:"
-                    keyword = gets.chomp.downcase
-                    episodes = Episode.find_by_keyword(keyword)
-                    puts "I have found #{episodes.count} episode(s).\n\n"
-                    episodes.map.with_index { |episode, i| puts "#{i} - #{episode.title} - #{episode.date}" }
-                    timeframe = gets.chomp.downcase
-
-                when "exit"
-                    input = "exit"
-                else
-                    puts "Sorry, I did not understand your response."
-                    puts "What would you like to do?"
-                    timeframe = gets.chomp.downcase
-                end
+                list_episodes
 
             when "create library"
-                Episode.all.each do |episode|
-                    @scraper.build_books(episode) rescue binding.pry
-                                        
-                end
-
-                binding.pry
+                create_library
             else
-                puts "Sorry, I did not understand your response."
-                puts "What would you like to do?"
-                input = gets.chomp.downcase
+                unexpected_input
+                @input = gets.chomp.downcase
             end
 
         end
 
+    end
+
+    def list_episodes
+        puts "\n\nChoose a timeframe to list episodes:"
+        puts "1. 'this week'"
+        puts "2. 'last week'"
+        puts "3. 'this month'"
+        puts "4. 'last month'"
+        puts "5. 'this year'"
+        puts "6. 'search' by keyword\n\n"
+        puts "Enter your selection:"
+
+        selection = gets.chomp.downcase
+
+        case selection
+        when "1", "this week", "1. this week"
+            today = Date.today
+            start_day = today - today.wday
+            episodes = Episode.all.select { |ep| ep.date > start_day }
+            puts "I'm listing episodes from this week"
+            selection = gets.chomp.downcase
+
+        when "2", "last week", "2. last week"
+            puts "I'm listing episodes from last week"
+            selection = gets.chomp.downcase
+
+        when "3", "this month", "3. this month"
+            puts "I'm listing episodes from this month"
+            selection = gets.chomp.downcase
+
+        when "4", "last month", "4. last month"
+            puts "I'm listing episodes from last month"
+            selection = gets.chomp.downcase
+
+        when "5", "this year", "5. this year"
+            puts "I'm listing episodes from this year"
+            selection = gets.chomp.downcase
+
+        when "6", "search", "6. search by keyword"
+            puts "Enter a keyword or phrase:"
+            keyword = gets.chomp.downcase
+            episodes = Episode.find_by_keyword(keyword)
+            puts "I have found #{episodes.count} episode(s).\n\n"
+            episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
+            selection = gets.chomp.downcase
+
+        when "exit"
+            @input = "exit"
+        else
+            unexpected_input
+            timeframe = gets.chomp.downcase
+        end
+    end
+
+    def create_library
+        Episode.all.each do |episode|
+            @scraper.build_books(episode) rescue binding.pry
+                                
+        end
+    end
+
+    def unexpected_input
+        puts "Sorry, I did not understand your response."
+        puts "What would you like to do?"
     end
 
 end
