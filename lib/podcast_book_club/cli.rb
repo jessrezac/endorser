@@ -25,7 +25,7 @@ class PodcastBookClub::CLI
         puts "To list available episodes to build a library, enter 'list episodes'."
         puts "To create a library from all episodes, enter 'create library'.\n\n"
         puts "What would you like to do?"
-        input = gets.chomp.downcase
+        @input = gets.chomp.downcase
 
         until @input == "exit"
 
@@ -59,12 +59,21 @@ class PodcastBookClub::CLI
         case selection
         when "1", "this week", "1. this week"
             today = Date.today
-            start_day = today - today.wday
-            episodes = Episode.all.select { |ep| ep.date > start_day }
-            puts "I'm listing episodes from this week"
+            first_date = today - today.wday
+            episodes = Episode.find_by_date(first_date, today)
+
+            puts_episodes(episodes)
+
             selection = gets.chomp.downcase
 
         when "2", "last week", "2. last week"
+            today = Date.today
+            first_date = today - today.wday - 7
+            last_date = today - today.wday
+            episodes = Episode.find_by_date(first_date, last_date)
+
+            puts_episodes(episodes)
+
             puts "I'm listing episodes from last week"
             selection = gets.chomp.downcase
 
@@ -84,8 +93,9 @@ class PodcastBookClub::CLI
             puts "Enter a keyword or phrase:"
             keyword = gets.chomp.downcase
             episodes = Episode.find_by_keyword(keyword)
-            puts "I have found #{episodes.count} episode(s).\n\n"
-            episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
+
+            puts_episodes(episodes)
+
             selection = gets.chomp.downcase
 
         when "exit"
@@ -107,5 +117,11 @@ class PodcastBookClub::CLI
         puts "Sorry, I did not understand your response."
         puts "What would you like to do?"
     end
+
+    def puts_episodes(episodes)
+        puts "I have found #{episodes.count} episode(s).\n\n"
+        episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
+    end
+
 
 end

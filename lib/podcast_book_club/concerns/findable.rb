@@ -20,8 +20,5 @@ module Findable
             instance
         end
 
-        def find_by_keyword(keyword)
-            self.all.select { |instance| instance.title.downcase.include?(keyword) }
-        end
     end
 end
