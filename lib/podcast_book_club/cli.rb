@@ -65,8 +65,7 @@ class PodcastBookClub::CLI
 
             puts_episodes(episodes)
 
-            puts "Enter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
-            option_3 = gets.chomp.downcase
+            select_episodes(episodes)
 
         when "2", "last week", "2. last week"
             first_date = @today - @today.wday - 7
@@ -111,6 +110,8 @@ class PodcastBookClub::CLI
 
             selection = gets.chomp.downcase
 
+            create_library(selection)
+
         when "exit"
             @input = "exit"
         else
@@ -121,7 +122,23 @@ class PodcastBookClub::CLI
 
     def create_library(episodes)
         episodes.each do |episode|
-            @scraper.build_books(episode) rescue binding.pry                     
+            @scraper.build_books(episode) unless episode.books != [] rescue binding.pry
+
+            puts "Here are the recommendations from \"#{episode.title}\":\n\n"
+
+            episode.books.each_with_index do |book, i|
+                authors = []
+                genres = []
+                book.author.each {|a| authors << a.name} unless book.author == []
+                book.genre.each {|g| genres << g.name} unless book.genre == []
+
+                puts "#{i + 1} - #{book.title}"
+                puts "Author(s): #{authors.join(", ")}" unless authors == []
+                puts "Genre: #{genres.join(", ")}" unless genres == []
+                puts "Synopsis: #{book.synopsis}\n\n"
+                puts "URL: #{book.url}\n\n"
+
+            end    
         end
     end
 
@@ -133,6 +150,26 @@ class PodcastBookClub::CLI
     def puts_episodes(episodes)
         puts "I have found #{episodes.count} episode(s).\n\n"
         episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
+    end
+
+    def select_episodes(episodes)
+        puts "Enter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
+
+        selection = gets.chomp.downcase
+
+        case selection
+        when /\d/
+            episodes = [episodes[selection.to_i - 1]]
+            create_library(episodes)
+        when "all"
+            create_library(episodes)
+        when "exit"
+            @input = "exit"
+        else
+            unexpected_input
+            selection = gets.chomp.downcase
+        end
+
     end
 
 end
