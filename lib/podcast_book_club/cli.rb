@@ -2,7 +2,13 @@ class PodcastBookClub::CLI
 
     def initialize
         welcome_message
+        binding.pry
+        Whirly.start(spinner: "pencil", color: false, status: "Loading Episodes")
+            
         @scraper = Scraper.new
+
+        Whirly.stop
+       
         call
     end
 
@@ -10,7 +16,7 @@ class PodcastBookClub::CLI
 
         until @input == "exit"
         
-            puts "To list available episodes to build a library, enter 'list episodes'."
+            puts "\n\nTo list available episodes to build a library, enter 'list episodes'."
             puts "To create a library from all episodes, enter 'create library'.\n\n"
     
             puts "Congratulations! You have some books in your library!\n\n" if Book.count > 0
@@ -204,20 +210,19 @@ class PodcastBookClub::CLI
 
     private
     def welcome_message
-        puts "                        _               _     _                 _           _       _     
+        puts Rainbow("                        _               _     _                 _           _       _     
         _ __   ___   __| | ___ __ _ ___| |_  | |__   ___   ___ | | __   ___| |_   _| |__  
        | '_ \\ / _ \\ / _` |/ __/ _` / __| __| | '_ \\ / _ \\ / _ \\| |/ /  / __| | | | | '_ \\ 
        | |_) | (_) | (_| | (_| (_| \\__ \\ |_  | |_) | (_) | (_) |   <  | (__| | |_| | |_) |
        | .__/ \\___/ \\__,_|\\___\\__,_|___/\\__| |_.__/ \\___/ \\___/|_|\\_\\  \\___|_|\\__,_|_.__/ 
        |_|                                                                                
 
-"
-       puts "The Ezra Klein Show brings you far-reaching conversations about hard problems, big ideas,"
-       puts "illuminating theories, and cutting-edge research."
-       puts "Podcast Book Club lets you climb around the guests' bookshelves."
-       puts "Let's get started!\n\n"
+").yellow.bright
 
-       puts "Loading episodes...\n\n"
+       puts Rainbow(" The Ezra Klein Show ").black.bg(:yellow).bright + " brings you far-reaching conversations about hard problems, big ideas,"
+       puts "illuminating theories, and cutting-edge research.\n\n"
+       puts Rainbow(" Podcast Book Club ").black.bg(:yellow).bright + " lets you climb around the guests' bookshelves."
+       puts "Let's get started!\n\n"
     end
 
     def unexpected_input
@@ -245,11 +250,11 @@ class PodcastBookClub::CLI
         book.author.each {|a| authors << a.name} unless book.author == []
         book.genre.each {|g| genres << g.name} unless book.genre == []
 
-        puts "#{number} - #{book.title}"
-        puts "Author(s): #{authors.join(", ")}" unless authors == []
-        puts "Genre: #{genres.join(", ")}" unless genres == []
-        puts "Synopsis: #{book.synopsis}\n\n"
-        puts "URL: #{book.url}\n\n"
+        puts Rainbow("#{number} - #{book.title}").yellow.bright
+        puts Rainbow("Author(s): ").yellow.bright + authors.join(", ") unless authors == []
+        puts Rainbow("Genre: ").yellow.bright + genres.join(", ") unless genres == []
+        puts Rainbow("Synopsis: ").yellow.bright + "#{book.synopsis}"
+        puts Rainbow("URL: ").yellow.bright + "#{book.url}\n\n"
 
     end
 
@@ -285,7 +290,6 @@ class PodcastBookClub::CLI
             sorted_books.each do |book|
                 authors = []
                 book.author.each { |author| authors << author.name}
-
 
                 puts "  #{book.title} by #{authors.join(", ")}"
             end
