@@ -2,18 +2,16 @@ class PodcastBookClub::CLI
 
     def initialize
         welcome_message
-        binding.pry
-        Whirly.start(spinner: "pencil", color: false, status: "Loading Episodes")
-            
-        @scraper = Scraper.new
+        @today = Date.today
 
+        Whirly.start(spinner: "pencil", color: false, status: "Loading Episodes")
+        @scraper = Scraper.new
         Whirly.stop
-       
+
         call
     end
 
     def call
-        @today = Date.today
 
         menu_options
 
@@ -23,57 +21,94 @@ class PodcastBookClub::CLI
             @input = gets.chomp.downcase
 
             case @input
-            when "1", "this week", "1. this week"
+            when "1", "this week"
                 first_date = @today - @today.wday
                 episodes = Episode.find_by_date(first_date, @today)
 
                 select_episodes(episodes)
 
-            when "2", "last week", "2. last week"
+            when "2", "last week"
                 first_date = @today - @today.wday - 7
                 last_date = @today - @today.wday
                 episodes = Episode.find_by_date(first_date, last_date)
 
                 select_episodes(episodes)
 
-            when "3", "this month", "3. this month"
+            when "3", "this month"
                 first_date = @today - @today.mday + 1
                 episodes = Episode.find_by_date(first_date, @today)
                 
                 select_episodes(episodes)
 
-            when "4", "last month", "4. last month"
+            when "4", "last month"
                 last_date = @today - @today.mday
                 first_date = last_date - last_date.mday + 1
                 episodes = Episode.find_by_date(first_date, last_date)
 
                 select_episodes(episodes)
 
-            when "5", "this year", "5. this year"
+            when "5", "this year"
                 first_date = @today - @today.yday + 1
                 episodes = Episode.find_by_date(first_date, @today)
 
                 select_episodes(episodes)
 
-            when "6", "search", "6. search by keyword"
+            when "6", "keyword"
                 puts "\n\nEnter a keyword or phrase:"
                 keyword = gets.chomp.downcase
                 episodes = Episode.find_by_keyword(keyword)
 
                 select_episodes(episodes)
 
+            when "7", "author"
+                
+                if Book.count > 0
+                    output_authors(Author.all)
+                else
+                    no_books
+                end
+
+            when "8", "genre"
+
+                if Book.count > 0
+                    output_genres(Genre.all)
+                else
+                    no_books
+                end
+
+            when "9", "search"
+
+                if Book.count > 0
+                    puts "\n\nEnter a keyword or phrase:"
+                    keyword = gets.chomp.downcase
+                    books = Book.find_by_keyword(keyword)
+    
+                    books.each_with_index do |book, i|
+                        episodes = []
+                        book.episode.each { |ep| episodes << ep.title}
+    
+                        output_book(book, i+1)
+                        puts "From the episode(s): #{episodes.join(", ")}"
+                    end
+    
+                else
+                    no_books
+                end
+
+            when "animal style"
+                create_library(Episode.all)
+
             when "help"
                 menu_options
             
             else
                 unexpected_input
-            
+
             end
 
         end
 
     end
-
 
 
     def create_library(episodes)
@@ -88,79 +123,81 @@ class PodcastBookClub::CLI
         end
     end
 
-    def explore_bookshelf
-        @shelf_option = ""
+    # def explore_bookshelf
+    #     @shelf_option = ""
 
-        puts "\n\nExplore by:"
-        puts "'author'"
-        puts "'genre'"
-        puts "keyword 'search'"
+    #     puts "\n\nExplore by:"
+    #     puts "'author'"
+    #     puts "'genre'"
+    #     puts "keyword 'search'"
 
-        puts "\n\nWhat would you like to do?"
+    #     puts "\n\nWhat would you like to do?"
 
-        until @shelf_option == "return"
-            @shelf_option = gets.chomp.downcase
+    #     until @shelf_option == "return"
+    #         @shelf_option = gets.chomp.downcase
 
-            case @shelf_option
-            when "author"
-                output_authors(Author.all)
+    #         case @shelf_option
+    #         when "author"
+    #             output_authors(Author.all)
 
-            when "genre"
-                output_genres(Genre.all)
+    #         when "genre"
+    #             output_genres(Genre.all)
 
-            when "search"
-                puts "\n\nEnter a keyword or phrase:"
-                keyword = gets.chomp.downcase
-                books = Book.find_by_keyword(keyword)
+    #         when "search"
+    #             puts "\n\nEnter a keyword or phrase:"
+    #             keyword = gets.chomp.downcase
+    #             books = Book.find_by_keyword(keyword)
 
-                books.each_with_index do |book, i|
-                    episodes = []
-                    book.episode.each { |ep| episodes << ep.title}
+    #             books.each_with_index do |book, i|
+    #                 episodes = []
+    #                 book.episode.each { |ep| episodes << ep.title}
 
-                    output_book(book, i+1)
-                    puts "From the episode(s): #{episodes.join(", ")}"
-                end
+    #                 output_book(book, i+1)
+    #                 puts "From the episode(s): #{episodes.join(", ")}"
+    #             end
 
-            when "return"
-                break
+    #         when "return"
+    #             break
 
-            when "exit"
-                @input = "exit"
-                break
-            else
-                unexpected_input
-            end
+    #         when "exit"
+    #             @input = "exit"
+    #             break
+    #         else
+    #             unexpected_input
+    #         end
 
-        end
+    #     end
     
-    end
+    # end
 
     def select_episodes(episodes)
-        @selection = ""
 
-        until @selection == "return"
-            select_menu(episodes)
-            @selection = gets.chomp.downcase
-    
-            case @selection
-            when /\d/
-                unless @selection.to_i > episodes.count
-                    episodes = [episodes[@selection.to_i - 1]]
-                    create_library(episodes)
-                else
-                    unexpected_input
-                end
-            when "all"
+        select_menu(episodes)
+        @selection = gets.chomp.downcase
+
+        case @selection
+        when /\d/
+            unless @selection.to_i > episodes.count
+                episodes = [episodes[@selection.to_i - 1]]
                 create_library(episodes)
-            when "return"
-                break
-            when "exit"
-                @input = "exit"
-                break
+                puts "'back' for previous menu or 'exit' to close program."
+                @selection = gets.chomp.downcase
+
             else
                 unexpected_input
-            end
+                select_menu(episodes)
+                @selection = gets.chomp.downcase
 
+            end
+        when "all"
+            create_library(episodes)
+            puts "'back' for previous menu or 'exit' to close program."
+        when "back"
+            call
+        when "exit"
+            @input = "exit"
+        else
+            unexpected_input
         end
 
     end
@@ -192,10 +229,13 @@ class PodcastBookClub::CLI
         puts "5. from 'this year'"
         puts "6. by 'keyword'"
 
-        puts "\n\nExplore bookshelf:"
-        puts "7. by 'author'"
-        puts "8. by 'genre'"
-        puts "9. by 'keyword'"
+        if Book.count > 0
+            puts "\n\nIt looks like you've found some books!"
+            puts "Explore bookshelf:"
+            puts "7. by 'author'"
+            puts "8. by 'genre'"
+            puts "9. 'search'"
+        end
 
         puts "\n\n'help' for options or 'exit'"
 
@@ -215,7 +255,7 @@ class PodcastBookClub::CLI
         puts_episodes(episodes)
 
         puts "\n\nEnter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
-        puts "Enter 'return' to return to previous menu or 'exit' to close program."
+        puts "Hit return for previous menu or 'exit' to close program."
         puts "\n\nWhat would you like to do?"
     end
 
@@ -272,5 +312,9 @@ class PodcastBookClub::CLI
         end
     end
 
+    def no_books
+        puts "Your library has no books! Find an episode to begin building your library."
+        menu_options
+    end
 
 end
