@@ -120,17 +120,7 @@ class PodcastBookClub::CLI
             puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 
             episode.books.each_with_index do |book, i|
-                authors = []
-                genres = []
-                book.author.each {|a| authors << a.name} unless book.author == []
-                book.genre.each {|g| genres << g.name} unless book.genre == []
-
-                puts "#{i + 1} - #{book.title}"
-                puts "Author(s): #{authors.join(", ")}" unless authors == []
-                puts "Genre: #{genres.join(", ")}" unless genres == []
-                puts "Synopsis: #{book.synopsis}\n\n"
-                puts "URL: #{book.url}\n\n"
-
+                output_book(book, i+1)
             end    
         end
     end
@@ -236,6 +226,21 @@ class PodcastBookClub::CLI
         puts "\n\nEnter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
         puts "Enter 'return' to return to previous menu or 'exit' to close program."
         puts "\n\nWhat would you like to do?"
+    end
+
+    def output_book(book, i)
+
+        authors = []
+        genres = []
+        book.author.each {|a| authors << a.name} unless book.author == []
+        book.genre.each {|g| genres << g.name} unless book.genre == []
+
+        puts "#{i + 1} - #{book.title}"
+        puts "Author(s): #{authors.join(", ")}" unless authors == []
+        puts "Genre: #{genres.join(", ")}" unless genres == []
+        puts "Synopsis: #{book.synopsis}\n\n"
+        puts "URL: #{book.url}\n\n"
+
     end
 
 end
