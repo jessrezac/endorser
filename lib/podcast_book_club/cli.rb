@@ -10,6 +10,10 @@ class PodcastBookClub::CLI
         
         puts "To list available episodes to build a library, enter 'list episodes'."
         puts "To create a library from all episodes, enter 'create library'.\n\n"
+
+        puts "Congratulations! You have some books in your library!\n\n" if Book.count > 0
+        puts "To explore your library, enter 'explore'.\n\n"
+
         puts "What would you like to do?"
         @input = gets.chomp.downcase
 
@@ -89,7 +93,7 @@ class PodcastBookClub::CLI
             select_episodes(episodes)
 
         when "6", "search", "6. search by keyword"
-            puts "Enter a keyword or phrase:"
+            puts "\n\nEnter a keyword or phrase:"
             keyword = gets.chomp.downcase
             episodes = Episode.find_by_keyword(keyword)
 
@@ -109,7 +113,7 @@ class PodcastBookClub::CLI
         episodes.each do |episode|
             @scraper.build_books(episode) unless episode.books != [] rescue binding.pry
 
-            puts "Here are the recommendations from \"#{episode.title}\":\n\n"
+            puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 
             episode.books.each_with_index do |book, i|
                 authors = []
@@ -128,31 +132,41 @@ class PodcastBookClub::CLI
     end
 
     def unexpected_input
-        puts "Sorry, I did not understand your response."
+        puts "\n\nSorry, I did not understand your response."
         puts "What would you like to do?"
     end
 
     def puts_episodes(episodes)
-        puts "I have found #{episodes.count} episode(s).\n\n"
+        puts "\n\nI have found #{episodes.count} episode(s).\n\n"
         episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
     end
 
     def select_episodes(episodes)
-        puts "Enter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
+        puts "\n\nEnter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
+        puts "Enter 'return' to return to previous menu or 'exit' to close program."
+        puts "\n\nWhat would you like to do?"
 
         @selection = gets.chomp.downcase
 
-        case @selection
-        when /\d/
-            episodes = [episodes[@selection.to_i - 1]]
-            create_library(episodes)
-        when "all"
-            create_library(episodes)
-        when "exit"
-            @input = "exit"
-        else
-            unexpected_input
-            @selection = gets.chomp.downcase
+        until @selection == "return"
+            case @selection
+            when /\d/
+                unless @selection.to_i > episodes.count
+                    episodes = [episodes[@selection.to_i - 1]]
+                    create_library(episodes)
+                else
+                    unexpected_input
+                    @selection = gets.chomp.downcase
+                end
+            when "all"
+                create_library(episodes)
+            when "exit"
+                @input = "exit"
+                break
+            else
+                unexpected_input
+                @selection = gets.chomp.downcase
+            end
         end
 
     end
