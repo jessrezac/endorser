@@ -1,26 +1,12 @@
 class PodcastBookClub::CLI
 
     def initialize
+        welcome_message
+        @scraper = Scraper.new
         call
     end
 
     def call
-        puts "                         _               _     _                 _           _       _     
-         _ __   ___   __| | ___ __ _ ___| |_  | |__   ___   ___ | | __   ___| |_   _| |__  
-        | '_ \\ / _ \\ / _` |/ __/ _` / __| __| | '_ \\ / _ \\ / _ \\| |/ /  / __| | | | | '_ \\ 
-        | |_) | (_) | (_| | (_| (_| \\__ \\ |_  | |_) | (_) | (_) |   <  | (__| | |_| | |_) |
-        | .__/ \\___/ \\__,_|\\___\\__,_|___/\\__| |_.__/ \\___/ \\___/|_|\\_\\  \\___|_|\\__,_|_.__/ 
-        |_|                                                                                
-
-"
-        puts "The Ezra Klein Show brings you far-reaching conversations about hard problems, big ideas,"
-        puts "illuminating theories, and cutting-edge research."
-        puts "Podcast Book Club lets you climb around the guests' bookshelves."
-        puts "Let's get started!\n\n"
-
-        puts "Loading episodes...\n\n"
-        
-        @scraper = Scraper.new
         
         puts "To list available episodes to build a library, enter 'list episodes'."
         puts "To create a library from all episodes, enter 'create library'.\n\n"
@@ -35,6 +21,7 @@ class PodcastBookClub::CLI
 
             when "create library"
                 create_library(Episode.all)
+
             else
                 unexpected_input
                 @input = gets.chomp.downcase
@@ -56,9 +43,9 @@ class PodcastBookClub::CLI
         puts "6. 'search' by keyword\n\n"
         puts "Enter your selection:"
 
-        selection = gets.chomp.downcase
+        @sub_option = gets.chomp.downcase
 
-        case selection
+        case @sub_option
         when "1", "this week", "1. this week"
             first_date = @today - @today.wday
             episodes = Episode.find_by_date(first_date, @today)
@@ -74,7 +61,7 @@ class PodcastBookClub::CLI
 
             puts_episodes(episodes)
 
-            selection = gets.chomp.downcase
+            select_episodes(episodes)
 
         when "3", "this month", "3. this month"
             first_date = @today - @today.mday + 1
@@ -82,7 +69,7 @@ class PodcastBookClub::CLI
 
             puts_episodes(episodes)
             
-            selection = gets.chomp.downcase
+            select_episodes(episodes)
 
         when "4", "last month", "4. last month"
             last_date = @today - @today.mday
@@ -91,7 +78,7 @@ class PodcastBookClub::CLI
 
             puts_episodes(episodes)
 
-            selection = gets.chomp.downcase
+            select_episodes(episodes)
 
         when "5", "this year", "5. this year"
             first_date = @today - @today.yday + 1
@@ -99,7 +86,7 @@ class PodcastBookClub::CLI
 
             puts_episodes(episodes)
 
-            selection = gets.chomp.downcase
+            select_episodes(episodes)
 
         when "6", "search", "6. search by keyword"
             puts "Enter a keyword or phrase:"
@@ -108,15 +95,13 @@ class PodcastBookClub::CLI
 
             puts_episodes(episodes)
 
-            selection = gets.chomp.downcase
-
-            create_library(selection)
+            select_episodes(episodes)
 
         when "exit"
             @input = "exit"
         else
             unexpected_input
-            timeframe = gets.chomp.downcase
+            @sub_option = gets.chomp.downcase
         end
     end
 
@@ -155,11 +140,11 @@ class PodcastBookClub::CLI
     def select_episodes(episodes)
         puts "Enter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
 
-        selection = gets.chomp.downcase
+        @selection = gets.chomp.downcase
 
-        case selection
+        case @selection
         when /\d/
-            episodes = [episodes[selection.to_i - 1]]
+            episodes = [episodes[@selection.to_i - 1]]
             create_library(episodes)
         when "all"
             create_library(episodes)
@@ -167,9 +152,27 @@ class PodcastBookClub::CLI
             @input = "exit"
         else
             unexpected_input
-            selection = gets.chomp.downcase
+            @selection = gets.chomp.downcase
         end
 
+    end
+
+    private
+    def welcome_message
+        puts "                        _               _     _                 _           _       _     
+        _ __   ___   __| | ___ __ _ ___| |_  | |__   ___   ___ | | __   ___| |_   _| |__  
+       | '_ \\ / _ \\ / _` |/ __/ _` / __| __| | '_ \\ / _ \\ / _ \\| |/ /  / __| | | | | '_ \\ 
+       | |_) | (_) | (_| | (_| (_| \\__ \\ |_  | |_) | (_) | (_) |   <  | (__| | |_| | |_) |
+       | .__/ \\___/ \\__,_|\\___\\__,_|___/\\__| |_.__/ \\___/ \\___/|_|\\_\\  \\___|_|\\__,_|_.__/ 
+       |_|                                                                                
+
+"
+       puts "The Ezra Klein Show brings you far-reaching conversations about hard problems, big ideas,"
+       puts "illuminating theories, and cutting-edge research."
+       puts "Podcast Book Club lets you climb around the guests' bookshelves."
+       puts "Let's get started!\n\n"
+
+       puts "Loading episodes...\n\n"
     end
 
 end
