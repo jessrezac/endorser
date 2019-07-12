@@ -48,4 +48,9 @@ class Book
         new_genre.add_book(self)
     end
 
+    def self.find_by_keyword(keyword)
+        self.all.select { |book| book.title.downcase.include?(keyword) || book.synopsis.downcase.include?(keyword) }
+    end
+    
+
 end

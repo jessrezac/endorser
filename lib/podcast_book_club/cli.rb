@@ -146,7 +146,17 @@ class PodcastBookClub::CLI
                 output_genres(Genre.all)
 
             when "search"
-                puts "I'm searching by keyword"
+                puts "\n\nEnter a keyword or phrase:"
+                keyword = gets.chomp.downcase
+                books = Book.find_by_keyword(keyword)
+
+                books.each_with_index do |book, i|
+                    episodes = []
+                    book.episode.each { |ep| episodes << ep.title}
+
+                    output_book(book, i+1)
+                    puts "From the episode(s): #{episodes.join(", ")}"
+                end
 
             when "return"
                 break

@@ -28,7 +28,7 @@ class Episode
 
   def self.find_by_keyword(keyword)
     self.all.select { |ep| ep.title.downcase.include?(keyword) }
-end
+  end
 
 
   def self.find_by_date(first_date, last_date)
