@@ -13,60 +13,16 @@ class PodcastBookClub::CLI
     end
 
     def call
-
-        until @input == "exit"
-        
-            puts "\n\nTo list available episodes to build a library, enter 'list episodes'."
-            puts "To create a library from all episodes, enter 'create library'.\n\n"
-    
-            puts "Congratulations! You have some books in your library!\n\n" if Book.count > 0
-            puts "To explore your library, enter 'explore'.\n\n" if Book.count > 0
-    
-            puts "What would you like to do?"
-            @input = gets.chomp.downcase
-
-
-            case @input
-            when "list episodes"
-                list_episodes
-
-            when "create library"
-                create_library(Episode.all)
-
-            when "explore"
-                explore_bookshelf
-
-            when "exit"
-                break
-
-            else
-                unexpected_input
-                @input = gets.chomp.downcase
-            end
-
-        end
-
-    end
-
-    def list_episodes
         @today = Date.today
 
-        @sub_option = ""
+        menu_options
 
-        until @sub_option == "return"
-            puts "\n\nChoose a timeframe to list episodes:"
-            puts "1. 'this week'"
-            puts "2. 'last week'"
-            puts "3. 'this month'"
-            puts "4. 'last month'"
-            puts "5. 'this year'"
-            puts "6. 'search' by keyword\n\n"
-            puts "Enter your selection:"
-    
-            @sub_option = gets.chomp.downcase
-    
+        until @input == "exit"
 
-            case @sub_option
+            puts "\n\nEnter your selection:"
+            @input = gets.chomp.downcase
+
+            case @input
             when "1", "this week", "1. this week"
                 first_date = @today - @today.wday
                 episodes = Episode.find_by_date(first_date, @today)
@@ -106,18 +62,19 @@ class PodcastBookClub::CLI
 
                 select_episodes(episodes)
 
-            when "return"
-                break
-
-            when "exit"
-                @input = "exit"
-                break
+            when "help"
+                menu_options
+            
             else
                 unexpected_input
-                @sub_option = gets.chomp.downcase
+            
             end
+
         end
+
     end
+
+
 
     def create_library(episodes)
         episodes.each do |episode|
@@ -223,6 +180,25 @@ class PodcastBookClub::CLI
        puts "illuminating theories, and cutting-edge research.\n\n"
        puts Rainbow(" Podcast Book Club ").black.bg(:yellow).bright + " lets you climb around the guests' bookshelves."
        puts "Let's get started!\n\n"
+    end
+
+    def menu_options
+
+        puts "\n\nList episodes:"
+        puts "1. from 'this week'"
+        puts "2. from 'last week'"
+        puts "3. from 'this month'"
+        puts "4. from 'last month'"
+        puts "5. from 'this year'"
+        puts "6. by 'keyword'"
+
+        puts "\n\nExplore bookshelf:"
+        puts "7. by 'author'"
+        puts "8. by 'genre'"
+        puts "9. by 'keyword'"
+
+        puts "\n\n'help' for options or 'exit'"
+
     end
 
     def unexpected_input
