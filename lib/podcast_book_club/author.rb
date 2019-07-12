@@ -8,7 +8,6 @@ class Author
     @@all = []
 
     def initialize(attributes)
-        binding.pry
         @books = []
 
         attributes.each do |k,v|

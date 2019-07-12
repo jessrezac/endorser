@@ -8,16 +8,16 @@ module Findable
             self.all.detect {|i| i.title.downcase.include?(title.downcase)}
         end
 
-        def find_or_create_by_name(attributes)
-            name = attributes[name]
-            instance = self.find_by_name(name) || self.create(attributes)
+        def find_or_create_by_name(name)
+            instance = self.find_by_name(name) || self.create({name: name})
             instance
         end
 
         def find_or_create_by_title(attributes)
-            title = attributes[title]
+            title = attributes[:title]
             instance = self.find_by_title(title) || self.create(attributes)
             instance
         end
+
     end
 end

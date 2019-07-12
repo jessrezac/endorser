@@ -26,5 +26,14 @@ class Episode
     books
   end
 
+  def self.find_by_keyword(keyword)
+    self.all.select { |ep| ep.title.downcase.include?(keyword) }
+  end
+
+
+  def self.find_by_date(first_date, last_date)
+    self.all.select { |ep| ep.date > first_date && ep.date < last_date }
+  end
+
 
 end

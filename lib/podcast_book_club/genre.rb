@@ -7,10 +7,13 @@ class Genre
 
     @@all = []
 
-    def initialize(name)
+    def initialize(attributes)
 
-      @name = name
       @books = []
+
+      attributes.each do |k,v|
+          self.send("#{k}=", v)
+      end
 
     end
 
