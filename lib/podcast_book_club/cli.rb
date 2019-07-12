@@ -143,7 +143,7 @@ class PodcastBookClub::CLI
                 output_authors(Author.all)
 
             when "genre"
-                puts "I'm searching by genre"
+                output_genres(Genre.all)
 
             when "search"
                 puts "I'm searching by keyword"
@@ -259,5 +259,28 @@ class PodcastBookClub::CLI
             end
         end
     end
+
+    def output_genres(genres)
+        sorted_genres = genres.sort {|left, right| left.name <=> right.name}
+        
+        sorted_genres.each_with_index do |genre, i|
+            name = genre.name
+            count = genre.books.count
+
+            puts "#{name} (#{count})"
+
+            sorted_books = genre.books.sort {|left, right| left.title <=> right.title}
+
+
+            sorted_books.each do |book|
+                authors = []
+                book.author.each { |author| authors << author.name}
+
+
+                puts "  #{book.title} by #{authors.join(", ")}"
+            end
+        end
+    end
+
 
 end
