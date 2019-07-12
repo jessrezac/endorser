@@ -230,7 +230,7 @@ class PodcastBookClub::CLI
         puts "6. by 'keyword'"
 
         if Book.count > 0
-            puts "\n\nIt looks like you've found some books!"
+            puts "\n\n" + Rainbow("It looks like you've found some books!").black.bg(:yellow).bright
             puts "Explore bookshelf:"
             puts "7. by 'author'"
             puts "8. by 'genre'"
@@ -247,8 +247,8 @@ class PodcastBookClub::CLI
     end
 
     def puts_episodes(episodes)
-        puts "\n\nI have found #{episodes.count} episode(s).\n\n"
-        episodes.map.with_index { |episode, i| puts "#{i+1} - #{episode.title} - #{episode.date}" }
+        puts "\n\nI have found " + Rainbow(episodes.count).yellow.bright + " episode(s).\n\n"
+        episodes.map.with_index { |episode, i| puts "#{i+1} - " + Rainbow("#{episode.title}").yellow.bright + " - #{episode.date}" }
     end
 
     def select_menu(episodes)
