@@ -140,7 +140,7 @@ class PodcastBookClub::CLI
 
             case @shelf_option
             when "author"
-                puts "I'm searching by author"
+                output_authors(Author.all)
 
             when "genre"
                 puts "I'm searching by genre"
@@ -228,19 +228,36 @@ class PodcastBookClub::CLI
         puts "\n\nWhat would you like to do?"
     end
 
-    def output_book(book, i)
+    def output_book(book, number)
 
         authors = []
         genres = []
         book.author.each {|a| authors << a.name} unless book.author == []
         book.genre.each {|g| genres << g.name} unless book.genre == []
 
-        puts "#{i + 1} - #{book.title}"
+        puts "#{number} - #{book.title}"
         puts "Author(s): #{authors.join(", ")}" unless authors == []
         puts "Genre: #{genres.join(", ")}" unless genres == []
         puts "Synopsis: #{book.synopsis}\n\n"
         puts "URL: #{book.url}\n\n"
 
+    end
+
+    def output_authors(authors)
+        sorted_authors = authors.sort {|left, right| left.name <=> right.name}
+        
+        sorted_authors.each_with_index do |author, i|
+            name = author.name
+            count = author.books.count
+
+            puts "#{name} (#{count})"
+
+            sorted_books = author.books.sort {|left, right| left.title <=> right.title}
+
+            sorted_books.each do |book|
+                puts "  #{book.title}"
+            end
+        end
     end
 
 end
