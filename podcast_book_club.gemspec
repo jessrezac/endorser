@@ -35,4 +35,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "nokogiri", "~> 1.6", ">= 1.6.8"
   spec.add_dependency "googlebooks", "~> 0.0.9"
+  spec.add_dependency "whirly", "~> 0.2.6"
+  spec.add_dependency "rainbow", "~> 3.0"
+  
 end

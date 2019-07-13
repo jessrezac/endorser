@@ -1,3 +1,5 @@
+require "whirly"
+require "rainbow"
 require "pry"
 require "date"
 require "nokogiri"
