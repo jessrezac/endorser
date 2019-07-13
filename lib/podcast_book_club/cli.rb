@@ -13,9 +13,9 @@ class PodcastBookClub::CLI
 
     def call
 
-        menu_options
-
         until @input == "exit"
+
+            menu_options
 
             puts "\n\nEnter your selection:"
             @input = gets.chomp.downcase
@@ -100,7 +100,10 @@ class PodcastBookClub::CLI
 
             when "help"
                 menu_options
-            
+
+            when "exit"
+                break
+                
             else
                 unexpected_input
 
@@ -123,53 +126,6 @@ class PodcastBookClub::CLI
         end
     end
 
-    # def explore_bookshelf
-    #     @shelf_option = ""
-
-    #     puts "\n\nExplore by:"
-    #     puts "'author'"
-    #     puts "'genre'"
-    #     puts "keyword 'search'"
-
-    #     puts "\n\nWhat would you like to do?"
-
-    #     until @shelf_option == "return"
-    #         @shelf_option = gets.chomp.downcase
-
-    #         case @shelf_option
-    #         when "author"
-    #             output_authors(Author.all)
-
-    #         when "genre"
-    #             output_genres(Genre.all)
-
-    #         when "search"
-    #             puts "\n\nEnter a keyword or phrase:"
-    #             keyword = gets.chomp.downcase
-    #             books = Book.find_by_keyword(keyword)
-
-    #             books.each_with_index do |book, i|
-    #                 episodes = []
-    #                 book.episode.each { |ep| episodes << ep.title}
-
-    #                 output_book(book, i+1)
-    #                 puts "From the episode(s): #{episodes.join(", ")}"
-    #             end
-
-    #         when "return"
-    #             break
-
-    #         when "exit"
-    #             @input = "exit"
-    #             break
-    #         else
-    #             unexpected_input
-    #         end
-
-    #     end
-    
-    # end
-
     def select_episodes(episodes)
 
         select_menu(episodes)
@@ -189,6 +145,7 @@ class PodcastBookClub::CLI
                 @selection = gets.chomp.downcase
 
             end
+
         when "all"
             create_library(episodes)
             puts "'back' for previous menu or 'exit' to close program."
@@ -255,7 +212,7 @@ class PodcastBookClub::CLI
         puts_episodes(episodes)
 
         puts "\n\nEnter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
-        puts "Hit return for previous menu or 'exit' to close program."
+        puts "Use 'back' for previous menu or 'exit' to close program."
         puts "\n\nWhat would you like to do?"
     end
 
