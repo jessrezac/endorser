@@ -9,15 +9,15 @@ class Scraper
 
     def fetch_episodes(path)
       html = open(path)
-      doc = Nokogiri::HTML(html)
-
+      doc = Nokogiri::HTML(html, nil, Encoding::UTF_8.to_s)
       episodes = doc.css(".info")
 
       episodes.each do |episode|
-        title = episode.css(".info-top a").text.strip.force_encoding("ascii").encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "")
+
+        title = episode.css(".info-top a").text.strip
         link = "https://player.fm#{episode.css(".info-top a").attribute("href").value}"
         date = Date.strptime(episode.css(".timeago").attribute("datetime").value)
-    
+        
         attributes = {
             title: title,
             link: link,
