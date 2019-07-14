@@ -5,6 +5,7 @@ class Scraper
     def initialize
         path = build_path
         fetch_episodes(path)
+        @config = googlebooks_config
     end
 
     def fetch_episodes(path)
@@ -36,7 +37,7 @@ class Scraper
         queries = send_to_parser(episode)
 
         queries.each do |query|
-          google_book_search = GoogleBooks.search(query, googlebooks_config)
+          google_book_search = GoogleBooks.search(query, @config)
           result = google_book_search.first
 
           attributes = {}

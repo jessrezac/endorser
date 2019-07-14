@@ -8,6 +8,7 @@ Whirly.start(spinner: "bouncingBall", color: false, remove_after_stop: true, sta
     require "open-uri"
     require "googlebooks"
 
+    require_relative 'api'
     require_relative '../lib/podcast_book_club/cli'
     require_relative '../lib/podcast_book_club/version'
     require_relative '../lib/podcast_book_club/concerns/memorable'
