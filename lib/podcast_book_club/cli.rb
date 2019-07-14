@@ -62,10 +62,8 @@ class PodcastBookClub::CLI
 
             when "7", "author"
                 
-                if Book.count > 0
-                    sorted_authors = Author.all.sort {|left, right| left.name <=> right.name}
-        
-                    sorted_authors.each { |author| author.output }
+                if Book.count > 0        
+                    Author.sort_by_name.each { |author| author.output }
                 else
                     no_books
                 end
@@ -73,9 +71,7 @@ class PodcastBookClub::CLI
             when "8", "genre"
 
                 if Book.count > 0
-                    sorted_genres = Genre.all.sort {|left, right| left.name <=> right.name}
-
-                    sorted_genres.each { |genre| genre.output }
+                    Genre.sort_by_name.each { |genre| genre.output }
                 else
                     no_books
                 end

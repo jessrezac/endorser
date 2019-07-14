@@ -3,7 +3,9 @@ class Book
 
     extend Memorable::ClassMethods
     extend Findable::ClassMethods
+    extend Sortable::ClassMethods
     include Memorable::InstanceMethods
+
 
     @@all = []
 

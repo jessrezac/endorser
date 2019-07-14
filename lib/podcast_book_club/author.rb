@@ -3,6 +3,7 @@ class Author
 
     extend Memorable::ClassMethods
     extend Findable::ClassMethods
+    extend Sortable::ClassMethods
     include Memorable::InstanceMethods
 
     @@all = []
@@ -32,8 +33,7 @@ class Author
 
         puts "\n\n" + Rainbow("#{self.name}").yellow.bright + Rainbow(" (#{self.books.count})").silver
 
-        sorted_books = self.books.sort {|left, right| left.title <=> right.title}
-
+        sorted_books = self.books.sort_by { |book| book.title}
         sorted_books.each do |book|
             puts "  #{book.title}"
         end
