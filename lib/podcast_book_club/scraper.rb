@@ -36,7 +36,7 @@ class Scraper
         queries = send_to_parser(episode)
 
         queries.each do |query|
-          google_book_search = GoogleBooks.search(query, {:api_key => 'AIzaSyAQeKqyYWmxAAEWhYUVNDd3EcOCQ2CgS8Q'} )
+          google_book_search = GoogleBooks.search(query, googlebooks_config)
           result = google_book_search.first
 
           attributes = {}
