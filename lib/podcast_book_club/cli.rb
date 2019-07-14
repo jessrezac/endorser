@@ -63,7 +63,9 @@ class PodcastBookClub::CLI
             when "7", "author"
                 
                 if Book.count > 0
-                    output_authors(Author.all)
+                    sorted_authors = Author.all.sort {|left, right| left.name <=> right.name}
+        
+                    sorted_authors.each { |author| author.output }
                 else
                     no_books
                 end
@@ -87,7 +89,7 @@ class PodcastBookClub::CLI
                         episodes = []
                         book.episode.each { |ep| episodes << ep.title}
     
-                        output_book(book, i+1)
+                        book.output(i+1)
                         puts "From the episode(s): #{episodes.join(", ")}"
                     end
     
@@ -121,7 +123,7 @@ class PodcastBookClub::CLI
             puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 
             episode.books.each_with_index do |book, i|
-                output_book(book, i+1)
+                book.output(i+1)
             end    
         end
     end
@@ -213,38 +215,9 @@ class PodcastBookClub::CLI
         puts "\n\nWhat would you like to do?"
     end
 
-    def output_book(book, number)
-
-        authors = []
-        genres = []
-
-        book.author.each {|a| authors << a.name} unless book.author == [] || book.author == nil
-        book.genre.each {|g| genres << g.name} unless book.genre == [] || book.genre == nil
-
-        puts Rainbow("#{number} - #{book.title}").yellow.bright
-        puts Rainbow("Author(s): ").yellow.bright + authors.join(", ") unless authors == []
-        puts Rainbow("Genre: ").yellow.bright + genres.join(", ") unless genres == []
-        puts Rainbow("Synopsis: ").yellow.bright + "#{book.synopsis}" unless book.synopsis == ""
-        puts Rainbow("URL: ").yellow.bright + "#{book.url}\n\n"
-
-    end
-
-    def output_authors(authors)
-        sorted_authors = authors.sort {|left, right| left.name <=> right.name}
-        
-        sorted_authors.each_with_index do |author, i|
-            name = author.name
-            count = author.books.count
-
-            puts "#{name} (#{count})"
-
-            sorted_books = author.books.sort {|left, right| left.title <=> right.title}
-
-            sorted_books.each do |book|
-                puts "  #{book.title}"
-            end
-        end
-    end
+    # def output_authors(authors)
+       
+    # end
 
     def output_genres(genres)
         sorted_genres = genres.sort {|left, right| left.name <=> right.name}

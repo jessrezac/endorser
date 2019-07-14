@@ -28,4 +28,16 @@ class Author
         @books.map { |book| book.genre }.flatten.uniq
     end
 
+    def output
+
+        puts "#{self.name} (#{self.books.count})"
+
+        sorted_books = self.books.sort {|left, right| left.title <=> right.title}
+
+        sorted_books.each do |book|
+            puts "  #{book.title}"
+        end
+
+    end
+
   end

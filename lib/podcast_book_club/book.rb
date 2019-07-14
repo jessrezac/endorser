@@ -51,6 +51,20 @@ class Book
     def self.find_by_keyword(keyword)
         self.all.select { |book| book.title.downcase.include?(keyword) || book.synopsis.downcase.include?(keyword) }
     end
+
+    def output(number)
+        authors = []
+        genres = []
+
+        self.author.each {|a| authors << a.name} unless self.author == [] || self.author == nil
+        self.genre.each {|g| genres << g.name} unless self.genre == [] || self.genre == nil
+
+        puts Rainbow("#{number} - #{self.title}").yellow.bright
+        puts Rainbow("Author(s): ").yellow.bright + authors.join(", ") unless authors == []
+        puts Rainbow("Genre: ").yellow.bright + genres.join(", ") unless genres == []
+        puts Rainbow("Synopsis: ").yellow.bright + "#{self.synopsis}" unless self.synopsis == ""
+        puts Rainbow("URL: ").yellow.bright + "#{self.url}\n\n"
+    end
     
 
 end
