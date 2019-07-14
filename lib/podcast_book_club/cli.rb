@@ -136,8 +136,6 @@ class PodcastBookClub::CLI
             unless @selection.to_i > episodes.count
                 episodes = [episodes[@selection.to_i - 1]]
                 create_library(episodes)
-                puts "'back' for previous menu or 'exit' to close program."
-                @selection = gets.chomp.downcase
 
             else
                 unexpected_input
@@ -148,7 +146,6 @@ class PodcastBookClub::CLI
 
         when "all"
             create_library(episodes)
-            puts "'back' for previous menu or 'exit' to close program."
         when "back"
             call
         when "exit"
@@ -220,13 +217,14 @@ class PodcastBookClub::CLI
 
         authors = []
         genres = []
-        book.author.each {|a| authors << a.name} unless book.author == []
-        book.genre.each {|g| genres << g.name} unless book.genre == []
+
+        book.author.each {|a| authors << a.name} unless book.author == [] || book.author == nil
+        book.genre.each {|g| genres << g.name} unless book.genre == [] || book.genre == nil
 
         puts Rainbow("#{number} - #{book.title}").yellow.bright
         puts Rainbow("Author(s): ").yellow.bright + authors.join(", ") unless authors == []
         puts Rainbow("Genre: ").yellow.bright + genres.join(", ") unless genres == []
-        puts Rainbow("Synopsis: ").yellow.bright + "#{book.synopsis}"
+        puts Rainbow("Synopsis: ").yellow.bright + "#{book.synopsis}" unless book.synopsis == ""
         puts Rainbow("URL: ").yellow.bright + "#{book.url}\n\n"
 
     end
