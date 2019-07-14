@@ -58,7 +58,7 @@ class Scraper
         snapshot_date = Date.new(2019,6,25)
         today = Date.today
         episodes_since_snapshot = snapshot_date.step(today).select{|d| d.monday? || d.thursday?}.size
-        url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 225}&order=newest&query=&style=list&container=false&offset=0"
+        url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 183}&order=newest&query=&style=list&container=false&offset=0"
     end
 
     def describe_episode(episode)
