@@ -204,7 +204,7 @@ class PodcastBookClub::CLI
 
     def puts_episodes(episodes)
         puts "\n\nI have found " + Rainbow(episodes.count).bg(:black).yellow.bright + " episode(s).\n\n"
-        episodes.map.with_index { |episode, i| puts "#{i+1} - " + Rainbow("#{episode.title}").bg(:black).yellow.bright + " - #{episode.date}" }
+        episodes.each.with_index { |episode, i| episode.output(i+1) }
     end
 
     def select_menu(episodes)
