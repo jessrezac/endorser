@@ -39,20 +39,24 @@ class Scraper
           google_book_search = GoogleBooks.search(query, {:api_key => 'AIzaSyAQeKqyYWmxAAEWhYUVNDd3EcOCQ2CgS8Q'} )
           result = google_book_search.first
 
-          url = result.info_link unless result.info_link.nil?
-          title = result.title  unless result.title.nil?
-          author = result.authors_array unless result.authors_array.nil? || result.authors_array == [nil]
-          genre = result.categories unless result.categories.nil? || result.categories == ""
-          synopsis = result.description unless result.description.nil?
+          attributes = {}
 
-          Book.find_or_create_by_title({
-            url: url,
-            title: title,
-            author: author,
-            genre: genre,
-            synopsis: synopsis,
-            episode: episode
-          })
+          begin
+
+            attributes[:url] = result.info_link unless result.info_link.nil?
+            attributes[:title] = result.title  unless result.title.nil?
+            attributes[:author] = result.authors_array unless result.authors_array.nil? || result.authors_array == [nil]
+            attributes[:genre] = result.categories unless result.categories.nil? || result.categories == ""
+            attributes[:synopsis] = result.description unless result.description.nil?
+            attributes[:episode] = episode
+
+            Book.find_or_create_by_title(attributes)
+
+          rescue
+
+            puts "I'm having trouble adding the book " + Rainbow("#{query}").bg(:black).yellow + "from episode: #{episode.output(Episode.all.index(episode))}."
+          
+          end
         end
       end
 
@@ -61,8 +65,8 @@ class Scraper
     def build_path
         snapshot_date = Date.new(2019,6,25)
         today = Date.today
-        episodes_since_snapshot = snapshot_date.step(today).select{|d| d.monday? || d.wednesday?}.size
-        url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 225}&order=newest&query=&style=list&container=false&offset=0"
+        episodes_since_snapshot = snapshot_date.step(today).select{|d| d.monday? || d.thursday?}.size
+        url = "https://player.fm/series/the-ezra-klein-show/episodes?active=true&limit=#{episodes_since_snapshot + 183}&order=newest&query=&style=list&container=false&offset=0"
     end
 
     def describe_episode(episode)
@@ -107,15 +111,15 @@ class Scraper
         book_titles.map.with_index do |title, i|
           unless i + 1 == book_titles.length
             description = description.split(book_titles[i+1 || i])
-            author = description[0]
+            author = description[0].strip
 
-            books << "#{title}#{author}"
+            books << "#{title} #{author}"
 
             description = description.pop
 
           else
 
-            books << "#{title}#{description[0]}"
+            books << "#{title} #{description[0].strip}"
 
           end
 

@@ -4,9 +4,9 @@ class PodcastBookClub::CLI
         welcome_message
         @today = Date.today
 
-        Whirly.start(spinner: "pencil", color: false, status: "Loading Episodes")
-        @scraper = Scraper.new
-        Whirly.stop
+        Whirly.start(spinner: "pencil", color: false, remove_after_stop: true, status: "Loading Episodes") do
+            @scraper = Scraper.new
+        end
 
         call
     end
@@ -115,7 +115,8 @@ class PodcastBookClub::CLI
 
     def create_library(episodes)
         episodes.each do |episode|
-            @scraper.build_books(episode) unless episode.books != [] rescue binding.pry
+            
+            @scraper.build_books(episode) unless episode.books != []
 
             puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 
@@ -127,30 +128,33 @@ class PodcastBookClub::CLI
 
     def select_episodes(episodes)
 
-        select_menu(episodes)
-        @selection = gets.chomp.downcase
+        until @selection == "exit" || @selection == "back"
+            select_menu(episodes)
+            @selection = gets.chomp.downcase
 
-        case @selection
-        when /\d/
-            unless @selection.to_i > episodes.count
-                episodes = [episodes[@selection.to_i - 1]]
+            case @selection
+            when /\d/
+                unless @selection.to_i > episodes.count
+                    selected_episodes = [episodes[@selection.to_i - 1]]
+                    create_library(selected_episodes)
+
+                else
+                    unexpected_input
+                    select_menu(episodes)
+                    @selection = gets.chomp.downcase
+
+                end
+
+            when "all"
                 create_library(episodes)
-
+            when "back"
+                call
+            when "exit"
+                @input = "exit"
             else
                 unexpected_input
-                select_menu(episodes)
-                @selection = gets.chomp.downcase
-
             end
 
-        when "all"
-            create_library(episodes)
-        when "back"
-            call
-        when "exit"
-            @input = "exit"
-        else
-            unexpected_input
         end
 
     end
@@ -164,7 +168,7 @@ class PodcastBookClub::CLI
        | .__/ \\___/ \\__,_|\\___\\__,_|___/\\__| |_.__/ \\___/ \\___/|_|\\_\\  \\___|_|\\__,_|_.__/ 
        |_|                                                                                
 
-").yellow.bright
+").bg(:black).yellow.bright
 
        puts Rainbow(" The Ezra Klein Show ").black.bg(:yellow).bright + " brings you far-reaching conversations about hard problems, big ideas,"
        puts "illuminating theories, and cutting-edge research.\n\n"
@@ -200,8 +204,8 @@ class PodcastBookClub::CLI
     end
 
     def puts_episodes(episodes)
-        puts "\n\nI have found " + Rainbow(episodes.count).yellow.bright + " episode(s).\n\n"
-        episodes.map.with_index { |episode, i| puts "#{i+1} - " + Rainbow("#{episode.title}").yellow.bright + " - #{episode.date}" }
+        puts "\n\nI have found " + Rainbow(episodes.count).bg(:black).yellow.bright + " episode(s).\n\n"
+        episodes.each.with_index { |episode, i| episode.output(i+1) }
     end
 
     def select_menu(episodes)

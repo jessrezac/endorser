@@ -34,7 +34,7 @@ class Genre
     end
 
     def output
-      puts "\n\n" + Rainbow("#{self.name}").yellow.bright + " (#{self.books.count})"
+      puts "\n\n" + Rainbow("#{self.name}").bg(:black).yellow.bright + " (#{self.books.count})"
 
       sorted_books = self.books.sort_by { |book| book.title}
       sorted_books.each do |book|
