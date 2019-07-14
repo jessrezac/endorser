@@ -115,7 +115,8 @@ class PodcastBookClub::CLI
 
     def create_library(episodes)
         episodes.each do |episode|
-            @scraper.build_books(episode) unless episode.books != [] rescue binding.pry
+            
+            @scraper.build_books(episode) unless episode.books != []
 
             puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 

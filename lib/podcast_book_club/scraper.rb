@@ -41,14 +41,22 @@ class Scraper
 
           attributes = {}
 
-          attributes[:url] = result.info_link unless result.info_link.nil?
-          attributes[:title] = result.title  unless result.title.nil?
-          attributes[:author] = result.authors_array unless result.authors_array.nil? || result.authors_array == [nil]
-          attributes[:genre] = result.categories unless result.categories.nil? || result.categories == ""
-          attributes[:synopsis] = result.description unless result.description.nil?
-          attributes[:episode] = episode
+          begin
 
-          Book.find_or_create_by_title(attributes)
+            attributes[:url] = result.info_link unless result.info_link.nil?
+            attributes[:title] = result.title  unless result.title.nil?
+            attributes[:author] = result.authors_array unless result.authors_array.nil? || result.authors_array == [nil]
+            attributes[:genre] = result.categories unless result.categories.nil? || result.categories == ""
+            attributes[:synopsis] = result.description unless result.description.nil?
+            attributes[:episode] = episode
+
+            Book.find_or_create_by_title(attributes)
+
+          rescue
+
+            puts "I'm having trouble adding the book " + Rainbow("#{query}").bg(:black).yellow + "from episode: #{episode.output(Episode.all.index(episode))}."
+          
+          end
         end
       end
 
