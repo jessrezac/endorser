@@ -34,7 +34,7 @@ class Episode
 
 
   def self.find_by_date(first_date, last_date)
-    self.all.select { |ep| ep.date > first_date && ep.date < last_date }
+    self.all.select { |ep| ep.date >= first_date && ep.date <= last_date }
   end
 
 

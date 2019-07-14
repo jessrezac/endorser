@@ -109,13 +109,13 @@ class Scraper
             description = description.split(book_titles[i+1 || i])
             author = description[0]
 
-            books << "#{title}#{author}"
+            books << "#{title} #{author}"
 
             description = description.pop
 
           else
 
-            books << "#{title}#{description[0]}"
+            books << "#{title} #{description[0]}"
 
           end
 

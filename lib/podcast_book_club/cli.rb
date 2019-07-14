@@ -37,6 +37,8 @@ class PodcastBookClub::CLI
             when "3", "this month"
                 first_date = @today - @today.mday + 1
                 episodes = Episode.find_by_date(first_date, @today)
+
+                binding.pry
                 
                 select_episodes(episodes)
 
