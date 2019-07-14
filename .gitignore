@@ -7,7 +7,7 @@
 /spec/reports/
 /tmp/
 /spec/
-/config/key.rb
+/config/api.rb
 
 # rspec failure tracking
 .rspec_status
