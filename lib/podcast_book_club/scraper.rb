@@ -107,7 +107,7 @@ class Scraper
         book_titles.map.with_index do |title, i|
           unless i + 1 == book_titles.length
             description = description.split(book_titles[i+1 || i])
-            author = description[0]
+            author = description[0].strip
 
             books << "#{title} #{author}"
 
@@ -115,7 +115,7 @@ class Scraper
 
           else
 
-            books << "#{title} #{description[0]}"
+            books << "#{title} #{description[0].strip}"
 
           end
 
