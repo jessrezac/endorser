@@ -62,8 +62,8 @@ class PodcastBookClub::CLI
 
             when "7", "author"
                 
-                if Book.count > 0
-                    output_authors(Author.all)
+                if Book.count > 0        
+                    Author.sort_by_name.each { |author| author.output }
                 else
                     no_books
                 end
@@ -71,7 +71,7 @@ class PodcastBookClub::CLI
             when "8", "genre"
 
                 if Book.count > 0
-                    output_genres(Genre.all)
+                    Genre.sort_by_name.each { |genre| genre.output }
                 else
                     no_books
                 end
@@ -84,11 +84,10 @@ class PodcastBookClub::CLI
                     books = Book.find_by_keyword(keyword)
     
                     books.each_with_index do |book, i|
-                        episodes = []
-                        book.episode.each { |ep| episodes << ep.title}
+                        episodes = book.episode.map { |ep| ep.title}
     
-                        output_book(book, i+1)
-                        puts "From the episode(s): #{episodes.join(", ")}"
+                        book.output(i+1)
+                        puts "From the episode(s): #{episodes.join(", ")}\n\n"
                     end
     
                 else
@@ -121,7 +120,7 @@ class PodcastBookClub::CLI
             puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 
             episode.books.each_with_index do |book, i|
-                output_book(book, i+1)
+                book.output(i+1)
             end    
         end
     end
@@ -211,60 +210,6 @@ class PodcastBookClub::CLI
         puts "\n\nEnter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
         puts "Use 'back' for previous menu or 'exit' to close program."
         puts "\n\nWhat would you like to do?"
-    end
-
-    def output_book(book, number)
-
-        authors = []
-        genres = []
-
-        book.author.each {|a| authors << a.name} unless book.author == [] || book.author == nil
-        book.genre.each {|g| genres << g.name} unless book.genre == [] || book.genre == nil
-
-        puts Rainbow("#{number} - #{book.title}").yellow.bright
-        puts Rainbow("Author(s): ").yellow.bright + authors.join(", ") unless authors == []
-        puts Rainbow("Genre: ").yellow.bright + genres.join(", ") unless genres == []
-        puts Rainbow("Synopsis: ").yellow.bright + "#{book.synopsis}" unless book.synopsis == ""
-        puts Rainbow("URL: ").yellow.bright + "#{book.url}\n\n"
-
-    end
-
-    def output_authors(authors)
-        sorted_authors = authors.sort {|left, right| left.name <=> right.name}
-        
-        sorted_authors.each_with_index do |author, i|
-            name = author.name
-            count = author.books.count
-
-            puts "#{name} (#{count})"
-
-            sorted_books = author.books.sort {|left, right| left.title <=> right.title}
-
-            sorted_books.each do |book|
-                puts "  #{book.title}"
-            end
-        end
-    end
-
-    def output_genres(genres)
-        sorted_genres = genres.sort {|left, right| left.name <=> right.name}
-        
-        sorted_genres.each_with_index do |genre, i|
-            name = genre.name
-            count = genre.books.count
-
-            puts "#{name} (#{count})"
-
-            sorted_books = genre.books.sort {|left, right| left.title <=> right.title}
-
-
-            sorted_books.each do |book|
-                authors = []
-                book.author.each { |author| authors << author.name}
-
-                puts "  #{book.title} by #{authors.join(", ")}"
-            end
-        end
     end
 
     def no_books

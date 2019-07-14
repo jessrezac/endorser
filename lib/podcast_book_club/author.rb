@@ -3,6 +3,7 @@ class Author
 
     extend Memorable::ClassMethods
     extend Findable::ClassMethods
+    extend Sortable::ClassMethods
     include Memorable::InstanceMethods
 
     @@all = []
@@ -26,6 +27,17 @@ class Author
 
     def genres
         @books.map { |book| book.genre }.flatten.uniq
+    end
+
+    def output
+
+        puts "\n\n" + Rainbow("#{self.name}").yellow.bright + Rainbow(" (#{self.books.count})").silver
+
+        sorted_books = self.books.sort_by { |book| book.title}
+        sorted_books.each do |book|
+            puts "  #{book.title}"
+        end
+
     end
 
   end
