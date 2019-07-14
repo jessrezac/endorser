@@ -39,20 +39,16 @@ class Scraper
           google_book_search = GoogleBooks.search(query, {:api_key => 'AIzaSyAQeKqyYWmxAAEWhYUVNDd3EcOCQ2CgS8Q'} )
           result = google_book_search.first
 
-          url = result.info_link unless result.info_link.nil?
-          title = result.title  unless result.title.nil?
-          author = result.authors_array unless result.authors_array.nil? || result.authors_array == [nil]
-          genre = result.categories unless result.categories.nil? || result.categories == ""
-          synopsis = result.description unless result.description.nil?
+          attributes = {}
 
-          Book.find_or_create_by_title({
-            url: url,
-            title: title,
-            author: author,
-            genre: genre,
-            synopsis: synopsis,
-            episode: episode
-          })
+          attributes[:url] = result.info_link unless result.info_link.nil?
+          attributes[:title] = result.title  unless result.title.nil?
+          attributes[:author] = result.authors_array unless result.authors_array.nil? || result.authors_array == [nil]
+          attributes[:genre] = result.categories unless result.categories.nil? || result.categories == ""
+          attributes[:synopsis] = result.description unless result.description.nil?
+          attributes[:episode] = episode
+
+          Book.find_or_create_by_title(attributes)
         end
       end
 
