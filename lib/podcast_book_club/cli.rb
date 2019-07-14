@@ -73,7 +73,9 @@ class PodcastBookClub::CLI
             when "8", "genre"
 
                 if Book.count > 0
-                    output_genres(Genre.all)
+                    sorted_genres = Genre.all.sort {|left, right| left.name <=> right.name}
+
+                    sorted_genres.each { |genre| genre.output }
                 else
                     no_books
                 end
@@ -215,30 +217,8 @@ class PodcastBookClub::CLI
         puts "\n\nWhat would you like to do?"
     end
 
-    # def output_authors(authors)
-       
+    # def output_genres(genres)
     # end
-
-    def output_genres(genres)
-        sorted_genres = genres.sort {|left, right| left.name <=> right.name}
-        
-        sorted_genres.each_with_index do |genre, i|
-            name = genre.name
-            count = genre.books.count
-
-            puts "#{name} (#{count})"
-
-            sorted_books = genre.books.sort {|left, right| left.title <=> right.title}
-
-
-            sorted_books.each do |book|
-                authors = []
-                book.author.each { |author| authors << author.name}
-
-                puts "  #{book.title} by #{authors.join(", ")}"
-            end
-        end
-    end
 
     def no_books
         puts "Your library has no books! Find an episode to begin building your library."
