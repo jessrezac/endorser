@@ -167,7 +167,7 @@ class PodcastBookClub::CLI
        | .__/ \\___/ \\__,_|\\___\\__,_|___/\\__| |_.__/ \\___/ \\___/|_|\\_\\  \\___|_|\\__,_|_.__/ 
        |_|                                                                                
 
-").yellow.bright
+").bg(:black).yellow.bright
 
        puts Rainbow(" The Ezra Klein Show ").black.bg(:yellow).bright + " brings you far-reaching conversations about hard problems, big ideas,"
        puts "illuminating theories, and cutting-edge research.\n\n"
@@ -203,8 +203,8 @@ class PodcastBookClub::CLI
     end
 
     def puts_episodes(episodes)
-        puts "\n\nI have found " + Rainbow(episodes.count).yellow.bright + " episode(s).\n\n"
-        episodes.map.with_index { |episode, i| puts "#{i+1} - " + Rainbow("#{episode.title}").yellow.bright + " - #{episode.date}" }
+        puts "\n\nI have found " + Rainbow(episodes.count).bg(:black).yellow.bright + " episode(s).\n\n"
+        episodes.map.with_index { |episode, i| puts "#{i+1} - " + Rainbow("#{episode.title}").bg(:black).yellow.bright + " - #{episode.date}" }
     end
 
     def select_menu(episodes)

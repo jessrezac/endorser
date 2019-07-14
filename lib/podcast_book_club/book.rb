@@ -61,11 +61,11 @@ class Book
         self.author.each {|a| authors << a.name} unless self.author == [] || self.author == nil
         self.genre.each {|g| genres << g.name} unless self.genre == [] || self.genre == nil
 
-        puts Rainbow("#{number} - #{self.title}").yellow.bright
-        puts Rainbow("Author(s): ").yellow.bright + authors.join(", ") unless authors == []
-        puts Rainbow("Genre: ").yellow.bright + genres.join(", ") unless genres == []
-        puts Rainbow("Synopsis: ").yellow.bright + "#{self.synopsis}" unless self.synopsis == ""
-        puts Rainbow("URL: ").yellow.bright + "#{self.url}\n\n"
+        puts Rainbow("#{number} - #{self.title}").bg(:black).yellow.bright
+        puts Rainbow("Author(s): ").bg(:black).yellow.bright + authors.join(", ") unless authors == []
+        puts Rainbow("Genre: ").bg(:black).yellow.bright + genres.join(", ") unless genres == []
+        puts Rainbow("Synopsis: ").bg(:black).yellow.bright + "#{self.synopsis}" unless self.synopsis == ""
+        puts Rainbow("URL: ").bg(:black).yellow.bright + "#{self.url}\n\n"
     end
     
 
