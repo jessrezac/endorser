@@ -4,9 +4,9 @@ class PodcastBookClub::CLI
         welcome_message
         @today = Date.today
 
-        Whirly.start(spinner: "pencil", color: false, status: "Loading Episodes")
-        @scraper = Scraper.new
-        Whirly.stop
+        Whirly.start(spinner: "pencil", color: false, status: "Loading Episodes") do
+            @scraper = Scraper.new
+        end
 
         call
     end
