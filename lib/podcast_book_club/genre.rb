@@ -23,6 +23,10 @@ class Genre
       @@all
     end
 
+    def books=(book)
+      self.books << book
+    end
+
     def add_book(book)
         self.books << book unless self.books.include?(book)
         book.genre << self unless book.genre.include?(self)
