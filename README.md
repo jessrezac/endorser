@@ -23,6 +23,19 @@ Or install it yourself as:
 
     $ gem install podcast-book-club
 
+## Getting Started
+
+Before using Podcast Book Club you must create a new Google Books application. Visit [Google Books APIs](https://developers.google.com/books/docs/v1/using#APIKey) for details.
+
+Create a file `config/api.rb` in `config/` and copy and paste the following code:
+
+``` ruby
+# Google Books key
+def googlebooks_config
+    {:api_key => <your-api-key>}
+end
+```
+
 ## Usage
 
 Type the code below and follow the prompts to explore book recommendations.
