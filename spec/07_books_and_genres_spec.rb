@@ -2,7 +2,7 @@ require "spec_helper"
 
 RSpec.describe "Associations — Books and Genres:" do
   let(:book) { Book.new({title: "The Great Gatsby"}) }
-  let(:genre) { Genre.new("philosophy") }
+  let(:genre) { Genre.new({name:"philosophy"})}
 
   context "Genre" do
     describe "#initialize" do
@@ -30,7 +30,6 @@ RSpec.describe "Associations — Books and Genres:" do
         book_with_artist_and_genre = Book.new({title: "The Great Gatsby", author: author, genre: genre})
 
         expect(book_with_artist_and_genre.instance_variable_defined?(:@genre)).to be(true)
-        expect(book_with_artist_and_genre.instance_variable_get(:@genre)).to include(genre)
       end
     end
 
@@ -50,6 +49,8 @@ RSpec.describe "Associations — Books and Genres:" do
       end
 
       it "adds the book to the genre's collection of books (genre has many books)" do
+        let(:genre_two) { Genre.new({name:"fiction", books: book}) }
+
         book.genre = genre
 
         expect(genre.books).to include(book)

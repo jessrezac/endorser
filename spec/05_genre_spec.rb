@@ -1,9 +1,9 @@
 RSpec.describe "Genre" do
-    let(:genre) { Genre.new("philosophy") }
+    let(:genre) { Genre.new({name:"philosophy"}) }
   
     describe "#initialize" do
       it "accepts a name for the new genre" do
-        new_genre = Genre.new("fiction")
+        new_genre = Genre.new({name:"fiction"})
   
         new_genre_name = new_genre.instance_variable_get(:@name)
   
@@ -65,7 +65,7 @@ RSpec.describe "Genre" do
   
     describe ".create" do
       it "initializes and saves the genre" do
-        created_genre = Genre.create("economics")
+        created_genre = Genre.create({name:"economics"})
   
         expect(Genre.all).to include(created_genre)
       end
