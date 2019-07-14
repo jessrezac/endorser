@@ -136,8 +136,6 @@ class PodcastBookClub::CLI
             unless @selection.to_i > episodes.count
                 episodes = [episodes[@selection.to_i - 1]]
                 create_library(episodes)
-                puts "'back' for previous menu or 'exit' to close program."
-                @selection = gets.chomp.downcase
 
             else
                 unexpected_input
@@ -148,7 +146,6 @@ class PodcastBookClub::CLI
 
         when "all"
             create_library(episodes)
-            puts "'back' for previous menu or 'exit' to close program."
         when "back"
             call
         when "exit"
