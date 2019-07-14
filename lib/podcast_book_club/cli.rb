@@ -127,30 +127,33 @@ class PodcastBookClub::CLI
 
     def select_episodes(episodes)
 
-        select_menu(episodes)
-        @selection = gets.chomp.downcase
+        until @selection == "exit" || @selection == "back"
+            select_menu(episodes)
+            @selection = gets.chomp.downcase
 
-        case @selection
-        when /\d/
-            unless @selection.to_i > episodes.count
-                episodes = [episodes[@selection.to_i - 1]]
+            case @selection
+            when /\d/
+                unless @selection.to_i > episodes.count
+                    selected_episodes = [episodes[@selection.to_i - 1]]
+                    create_library(selected_episodes)
+
+                else
+                    unexpected_input
+                    select_menu(episodes)
+                    @selection = gets.chomp.downcase
+
+                end
+
+            when "all"
                 create_library(episodes)
-
+            when "back"
+                call
+            when "exit"
+                @input = "exit"
             else
                 unexpected_input
-                select_menu(episodes)
-                @selection = gets.chomp.downcase
-
             end
 
-        when "all"
-            create_library(episodes)
-        when "back"
-            call
-        when "exit"
-            @input = "exit"
-        else
-            unexpected_input
         end
 
     end
