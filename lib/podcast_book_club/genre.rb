@@ -32,7 +32,7 @@ class Genre
     end
 
     def output
-      puts "#{self.name} (#{self.books.count})"
+      puts "\n\n" + Rainbow("#{self.name}").yellow.bright + " (#{self.books.count})"
 
       sorted_books = self.books.sort {|left, right| left.title <=> right.title}
 

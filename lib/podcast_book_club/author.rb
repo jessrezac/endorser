@@ -30,7 +30,7 @@ class Author
 
     def output
 
-        puts "#{self.name} (#{self.books.count})"
+        puts "\n\n" + Rainbow("#{self.name}").yellow.bright + Rainbow(" (#{self.books.count})").silver
 
         sorted_books = self.books.sort {|left, right| left.title <=> right.title}
 

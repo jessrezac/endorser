@@ -49,7 +49,7 @@ class Book
     end
 
     def self.find_by_keyword(keyword)
-        self.all.select { |book| book.title.downcase.include?(keyword) || book.synopsis.downcase.include?(keyword) }
+        self.all.select { |book| book.title.downcase.include?(keyword) || book.synopsis.downcase.include?(keyword) unless book.synopsis == nil }
     end
 
     def output(number)

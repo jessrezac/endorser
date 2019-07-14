@@ -88,11 +88,10 @@ class PodcastBookClub::CLI
                     books = Book.find_by_keyword(keyword)
     
                     books.each_with_index do |book, i|
-                        episodes = []
-                        book.episode.each { |ep| episodes << ep.title}
+                        episodes = book.episode.map { |ep| ep.title}
     
                         book.output(i+1)
-                        puts "From the episode(s): #{episodes.join(", ")}"
+                        puts "From the episode(s): #{episodes.join(", ")}\n\n"
                     end
     
                 else
@@ -216,9 +215,6 @@ class PodcastBookClub::CLI
         puts "Use 'back' for previous menu or 'exit' to close program."
         puts "\n\nWhat would you like to do?"
     end
-
-    # def output_genres(genres)
-    # end
 
     def no_books
         puts "Your library has no books! Find an episode to begin building your library."
