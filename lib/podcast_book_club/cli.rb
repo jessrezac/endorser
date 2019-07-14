@@ -220,13 +220,14 @@ class PodcastBookClub::CLI
 
         authors = []
         genres = []
-        book.author.each {|a| authors << a.name} unless book.author == []
-        book.genre.each {|g| genres << g.name} unless book.genre == []
+
+        book.author.each {|a| authors << a.name} unless book.author == [] || book.author == nil
+        book.genre.each {|g| genres << g.name} unless book.genre == [] || book.genre == nil
 
         puts Rainbow("#{number} - #{book.title}").yellow.bright
         puts Rainbow("Author(s): ").yellow.bright + authors.join(", ") unless authors == []
         puts Rainbow("Genre: ").yellow.bright + genres.join(", ") unless genres == []
-        puts Rainbow("Synopsis: ").yellow.bright + "#{book.synopsis}"
+        puts Rainbow("Synopsis: ").yellow.bright + "#{book.synopsis}" unless book.synopsis == ""
         puts Rainbow("URL: ").yellow.bright + "#{book.url}\n\n"
 
     end

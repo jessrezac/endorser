@@ -15,7 +15,14 @@ module Findable
 
         def find_or_create_by_title(attributes)
             title = attributes[:title]
-            instance = self.find_by_title(title) || self.create(attributes)
+
+            if self.find_by_title(title)
+                instance = self.find_by_title
+                instance.episode = attributes[:episode]
+            else
+                self.create(attributes)
+            end
+            
             instance
         end
 

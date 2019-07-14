@@ -11,7 +11,7 @@ class Book
         @episode = []
 
         attributes.each do |k,v|
-            self.send("#{k}=", v)
+            self.send("#{k}=", v) unless v == nil
         end
 
     end
