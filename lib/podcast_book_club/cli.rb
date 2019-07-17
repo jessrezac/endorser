@@ -37,7 +37,7 @@ class PodcastBookClub::CLI
             when "3", "this month"
                 first_date = @today - @today.mday + 1
                 episodes = Episode.find_by_date(first_date, @today)
-                
+
                 select_episodes(episodes)
 
             when "4", "last month"
@@ -61,8 +61,8 @@ class PodcastBookClub::CLI
                 select_episodes(episodes)
 
             when "7", "author"
-                
-                if Book.count > 0        
+
+                if Book.count > 0
                     Author.sort_by_name.each { |author| author.output }
                 else
                     no_books
@@ -82,14 +82,14 @@ class PodcastBookClub::CLI
                     puts "\n\nEnter a keyword or phrase:"
                     keyword = gets.chomp.downcase
                     books = Book.find_by_keyword(keyword)
-    
+
                     books.each_with_index do |book, i|
                         episodes = book.episode.map { |ep| ep.title}
-    
+
                         book.output(i+1)
                         puts "From the episode(s): #{episodes.join(", ")}\n\n"
                     end
-    
+
                 else
                     no_books
                 end
@@ -102,7 +102,7 @@ class PodcastBookClub::CLI
 
             when "exit"
                 break
-                
+
             else
                 unexpected_input
 
@@ -115,14 +115,14 @@ class PodcastBookClub::CLI
 
     def create_library(episodes)
         episodes.each do |episode|
-            
+
             @scraper.build_books(episode) unless episode.books != []
 
             puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 
             episode.books.each_with_index do |book, i|
                 book.output(i+1)
-            end    
+            end
         end
     end
 
@@ -158,12 +158,12 @@ class PodcastBookClub::CLI
 
     private
     def welcome_message
-        puts Rainbow("                        _               _     _                 _           _       _     
-        _ __   ___   __| | ___ __ _ ___| |_  | |__   ___   ___ | | __   ___| |_   _| |__  
-       | '_ \\ / _ \\ / _` |/ __/ _` / __| __| | '_ \\ / _ \\ / _ \\| |/ /  / __| | | | | '_ \\ 
+        puts Rainbow("                        _               _     _                 _           _       _
+        _ __   ___   __| | ___ __ _ ___| |_  | |__   ___   ___ | | __   ___| |_   _| |__
+       | '_ \\ / _ \\ / _` |/ __/ _` / __| __| | '_ \\ / _ \\ / _ \\| |/ /  / __| | | | | '_ \\
        | |_) | (_) | (_| | (_| (_| \\__ \\ |_  | |_) | (_) | (_) |   <  | (__| | |_| | |_) |
-       | .__/ \\___/ \\__,_|\\___\\__,_|___/\\__| |_.__/ \\___/ \\___/|_|\\_\\  \\___|_|\\__,_|_.__/ 
-       |_|                                                                                
+       | .__/ \\___/ \\__,_|\\___\\__,_|___/\\__| |_.__/ \\___/ \\___/|_|\\_\\  \\___|_|\\__,_|_.__/
+       |_|
 
 ").bg(:black).yellow.bright
 
@@ -211,6 +211,29 @@ class PodcastBookClub::CLI
         puts "\n\nEnter the number of the episode to see recommended books or enter 'all' to create a library from all listed episodes."
         puts "Use 'back' for previous menu or 'exit' to close program."
         puts "\n\nWhat would you like to do?"
+    end
+
+    def output_book(book, number)
+
+    end
+
+    def output_episode(episode, number, display_description = false)
+        puts "#{number} - " + Rainbow("#{episode.title}").bg(:black).yellow.bright + " - #{episode.date}"
+        puts "#{episode.description}" if display_description == true
+    end
+
+    def output_author(author)
+        puts "\n\n" + Rainbow("#{author.name}").bg(:black).yellow.bright + Rainbow(" (#{author.books.count})").silver
+
+        sorted_books = author.books.sort_by { |book| book.title}
+        sorted_books.each do |book|
+            puts "  #{book.title}"
+        end
+
+    end
+
+    def output_genre(genre, number)
+
     end
 
     def no_books
