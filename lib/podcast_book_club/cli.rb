@@ -86,7 +86,7 @@ class PodcastBookClub::CLI
                     books.each_with_index do |book, i|
                         episodes = book.episode.map { |ep| ep.title}
 
-                        output_book(i+1)
+                        output_book(book, i+1)
                         puts "From the episode(s): #{episodes.join(", ")}\n\n"
                     end
 
@@ -121,7 +121,7 @@ class PodcastBookClub::CLI
             puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 
             episode.books.each_with_index do |book, i|
-                output_book(i+1)
+                output_book(book, i+1)
             end
         end
     end
@@ -241,8 +241,16 @@ class PodcastBookClub::CLI
 
     end
 
-    def output_genre(genre, number)
+    def output_genre(genre)
+        puts "\n\n" + Rainbow("#{genre.name}").bg(:black).yellow.bright + " (#{genre.books.count})"
 
+        sorted_books = genre.books.sort_by { |book| book.title}
+        sorted_books.each do |book|
+            authors = []
+            book.author.each { |author| authors << author.name}
+
+            puts "  #{book.title} by #{authors.join(", ")}"
+        end
     end
 
     def no_books

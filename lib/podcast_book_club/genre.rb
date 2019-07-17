@@ -37,16 +37,4 @@ class Genre
       @books.map { |book| book.author }.flatten.uniq
     end
 
-    def output
-      puts "\n\n" + Rainbow("#{self.name}").bg(:black).yellow.bright + " (#{self.books.count})"
-
-      sorted_books = self.books.sort_by { |book| book.title}
-      sorted_books.each do |book|
-        authors = []
-        book.author.each { |author| authors << author.name}
-
-        puts "  #{book.title} by #{authors.join(", ")}"
-      end
-    end
-
   end
