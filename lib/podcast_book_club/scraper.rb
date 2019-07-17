@@ -1,7 +1,7 @@
 require_relative "../podcast_book_club.rb"
 
 class Scraper
-  
+
     def initialize
         path = build_path
         fetch_episodes(path)
@@ -18,7 +18,7 @@ class Scraper
         title = episode.css(".info-top a").text.strip
         link = "https://player.fm#{episode.css(".info-top a").attribute("href").value}"
         date = Date.strptime(episode.css(".timeago").attribute("datetime").value)
-        
+
         attributes = {
             title: title,
             link: link,
@@ -56,7 +56,7 @@ class Scraper
           rescue
 
             puts "I'm having trouble adding the book " + Rainbow("#{query}").bg(:black).yellow + "from episode: #{episode.output(Episode.all.index(episode))}."
-          
+
           end
         end
       end
@@ -88,46 +88,34 @@ class Scraper
         parse_with_links(episode)
       when (without_links...with_links)
         parse_without_links(episode)
-      else 
+      else
         puts "This episode has no recommendations."
       end
 
     end
 
     def parse_with_links(episode)
-        book_titles = []
-
         book_links = @episode_doc.css(".description.prose > a")
 
-        book_links.map do |link|
-            if link.attribute("href").value.include?("amazon")
-              book_titles << link.text
-            end
-        end
+        book_titles = book_links.select { |link| link.attribute("href").value.include?("amazon")}.map {|link| link.text}
 
         description = @description.split(book_titles[0]).pop.to_s
 
-        books = []
-
         book_titles.map.with_index do |title, i|
-          unless i + 1 == book_titles.length
+
+          if i + 1 < book_titles.length
             description = description.split(book_titles[i+1 || i])
             author = description[0].strip
-
-            books << "#{title} #{author}"
-
             description = description.pop
 
+            "#{title} #{author}"
           else
 
-            books << "#{title} #{description[0].strip}"
+            "#{title} #{description[0].strip}"
 
           end
 
         end
-
-        books 
-
     end
 
     def parse_without_links(episode)
@@ -139,7 +127,7 @@ class Scraper
 
         book_queries = []
 
-        book_array.map.with_index do |item, i|
+        book_array.each.with_index do |item, i|
             if i.even?
                 book_queries << "#{item.strip} #{book_array[i+1]}"
             end
