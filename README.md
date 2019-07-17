@@ -41,7 +41,7 @@ end
 Type the code below and follow the prompts to explore book recommendations.
 
 ``` bash
-$ bin/run
+$ podcast_book_club
 ```
 
 ## Development

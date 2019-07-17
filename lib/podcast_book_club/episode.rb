@@ -37,9 +37,4 @@ class Episode
     self.all.select { |ep| ep.date >= first_date && ep.date <= last_date }
   end
 
-  def output(number, display_description = false)
-    puts "#{number} - " + Rainbow("#{self.title}").bg(:black).yellow.bright + " - #{self.date}"
-    puts "#{self.description}" if display_description == true
-  end
-
 end
