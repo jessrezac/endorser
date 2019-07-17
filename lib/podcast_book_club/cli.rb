@@ -215,6 +215,14 @@ class PodcastBookClub::CLI
 
     def output_book(book, number)
 
+        authors = book.author.map {|a| a.name} unless book.author == [] || book.author == nil
+        genres = book.genre.map {|g| g.name} unless book.genre == [] || book.genre == nil
+
+        puts Rainbow("#{number} - #{book.title}").bg(:black).yellow.bright
+        puts Rainbow("Author(s): ").bg(:black).yellow.bright + authors.join(", ") unless authors == []
+        puts Rainbow("Genre: ").bg(:black).yellow.bright + genres.join(", ") unless genres == []
+        puts Rainbow("Synopsis: ").bg(:black).yellow.bright + "#{book.synopsis}" unless book.synopsis == ""
+        puts Rainbow("URL: ").bg(:black).yellow.bright + "#{book.url}\n\n"
     end
 
     def output_episode(episode, number, display_description = false)
