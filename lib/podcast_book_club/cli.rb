@@ -63,7 +63,7 @@ class PodcastBookClub::CLI
             when "7", "author"
 
                 if Book.count > 0
-                    Author.sort_by_name.each { |author| author.output }
+                    Author.sort_by_name.each { |author| output_author(author) }
                 else
                     no_books
                 end
@@ -71,7 +71,7 @@ class PodcastBookClub::CLI
             when "8", "genre"
 
                 if Book.count > 0
-                    Genre.sort_by_name.each { |genre| genre.output }
+                    Genre.sort_by_name.each { |genre| output_genre(genre) }
                 else
                     no_books
                 end
@@ -86,7 +86,7 @@ class PodcastBookClub::CLI
                     books.each_with_index do |book, i|
                         episodes = book.episode.map { |ep| ep.title}
 
-                        book.output(i+1)
+                        output_book(i+1)
                         puts "From the episode(s): #{episodes.join(", ")}\n\n"
                     end
 
@@ -121,7 +121,7 @@ class PodcastBookClub::CLI
             puts "\n\nHere are the recommendations from \"#{episode.title}\":\n\n"
 
             episode.books.each_with_index do |book, i|
-                book.output(i+1)
+                output_book(i+1)
             end
         end
     end
@@ -202,7 +202,7 @@ class PodcastBookClub::CLI
 
     def puts_episodes(episodes)
         puts "\n\nI have found " + Rainbow(episodes.count).bg(:black).yellow.bright + " episode(s).\n\n"
-        episodes.each.with_index { |episode, i| episode.output(i+1) }
+        episodes.each.with_index { |episode, i| output_episode(episode, i+1) }
     end
 
     def select_menu(episodes)
@@ -223,6 +223,7 @@ class PodcastBookClub::CLI
         puts Rainbow("Genre: ").bg(:black).yellow.bright + genres.join(", ") unless genres == []
         puts Rainbow("Synopsis: ").bg(:black).yellow.bright + "#{book.synopsis}" unless book.synopsis == ""
         puts Rainbow("URL: ").bg(:black).yellow.bright + "#{book.url}\n\n"
+
     end
 
     def output_episode(episode, number, display_description = false)
