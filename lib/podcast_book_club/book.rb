@@ -6,14 +6,25 @@ class Book
     extend Sortable::ClassMethods
     include Memorable::InstanceMethods
 
-
     @@all = []
 
     def initialize(attributes)
         @episode = []
 
         attributes.each do |k,v|
-            self.send("#{k}=", v) unless v == nil
+            unless v == nil
+
+                if "#{k}" == "genre"
+                    self.add_genre(v)
+                elsif "#{k}" == "episode"
+                    self.add_episode(v)
+                elsif "#{k}" == "author"
+                    self.add_author(v)
+                else
+                    self.send("#{k}=", v)
+                end
+
+            end
         end
 
     end
@@ -22,11 +33,11 @@ class Book
         @@all
     end
 
-    def episode=(episode)
+    def add_episode(episode)
         episode.add_book(self)
     end
 
-    def author=(authors)
+    def add_author(authors)
         @author ||= []
 
         if authors.kind_of?(Array)
@@ -43,7 +54,7 @@ class Book
 
     end
 
-    def genre=(genre)
+    def add_genre(genre)
         @genre ||= []
 
         new_genre = Genre.find_or_create_by_name(genre)
@@ -53,20 +64,5 @@ class Book
     def self.find_by_keyword(keyword)
         self.all.select { |book| book.title.downcase.include?(keyword) || book.synopsis.downcase.include?(keyword) unless book.synopsis == nil }
     end
-
-    def output(number)
-        authors = []
-        genres = []
-
-        self.author.each {|a| authors << a.name} unless self.author == [] || self.author == nil
-        self.genre.each {|g| genres << g.name} unless self.genre == [] || self.genre == nil
-
-        puts Rainbow("#{number} - #{self.title}").bg(:black).yellow.bright
-        puts Rainbow("Author(s): ").bg(:black).yellow.bright + authors.join(", ") unless authors == []
-        puts Rainbow("Genre: ").bg(:black).yellow.bright + genres.join(", ") unless genres == []
-        puts Rainbow("Synopsis: ").bg(:black).yellow.bright + "#{self.synopsis}" unless self.synopsis == ""
-        puts Rainbow("URL: ").bg(:black).yellow.bright + "#{self.url}\n\n"
-    end
-    
 
 end

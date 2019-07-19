@@ -11,9 +11,8 @@ class Author
     def initialize(attributes)
         @books = []
 
-        attributes.each do |k,v|
-            self.send("#{k}=", v)
-        end
+        @name = attributes[:name]
+        self.add_book(attributes[:book])
 
     end
 
@@ -21,23 +20,12 @@ class Author
       @@all
     end
 
-    def books=(book)
+    def add_book(book)
         @books << book unless @books.include?(book)
     end
 
     def genres
         @books.map { |book| book.genre }.flatten.uniq
-    end
-
-    def output
-
-        puts "\n\n" + Rainbow("#{self.name}").bg(:black).yellow.bright + Rainbow(" (#{self.books.count})").silver
-
-        sorted_books = self.books.sort_by { |book| book.title}
-        sorted_books.each do |book|
-            puts "  #{book.title}"
-        end
-
     end
 
   end

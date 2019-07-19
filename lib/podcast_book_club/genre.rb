@@ -10,21 +10,13 @@ class Genre
     @@all = []
 
     def initialize(attributes)
-
       @books = []
-
-      attributes.each do |k,v|
-          self.send("#{k}=", v)
-      end
-
+      @name = attributes[:name]
+      @books << attributes[:book] if attributes[:book]
     end
 
     def self.all
       @@all
-    end
-
-    def books=(book)
-      self.books << book
     end
 
     def add_book(book)
@@ -35,18 +27,6 @@ class Genre
 
     def authors
       @books.map { |book| book.author }.flatten.uniq
-    end
-
-    def output
-      puts "\n\n" + Rainbow("#{self.name}").bg(:black).yellow.bright + " (#{self.books.count})"
-
-      sorted_books = self.books.sort_by { |book| book.title}
-      sorted_books.each do |book|
-        authors = []
-        book.author.each { |author| authors << author.name}
-
-        puts "  #{book.title} by #{authors.join(", ")}"
-      end
     end
 
   end
