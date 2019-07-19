@@ -3,7 +3,7 @@ class PodcastBookClub::CLI
     def initialize
         welcome_message
         @today = Date.today
-
+        
         Whirly.start(spinner: "pencil", color: false, remove_after_stop: true, status: "Loading Episodes") do
             @scraper = Scraper.new
         end
@@ -165,7 +165,7 @@ class PodcastBookClub::CLI
        | .__/ \\___/ \\__,_|\\___\\__,_|___/\\__| |_.__/ \\___/ \\___/|_|\\_\\  \\___|_|\\__,_|_.__/
        |_|
 
-").bg(:black).yellow.bright
+").yellow.bright
 
        puts Rainbow(" The Ezra Klein Show ").black.bg(:yellow).bright + " brings you far-reaching conversations about hard problems, big ideas,"
        puts "illuminating theories, and cutting-edge research.\n\n"
