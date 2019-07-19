@@ -11,9 +11,8 @@ class Author
     def initialize(attributes)
         @books = []
 
-        attributes.each do |k,v|
-            self.send("#{k}=", v)
-        end
+        @name = attributes[:name]
+        self.add_book(attributes[:book])
 
     end
 
@@ -21,7 +20,7 @@ class Author
       @@all
     end
 
-    def books=(book)
+    def add_book(book)
         @books << book unless @books.include?(book)
     end
 
