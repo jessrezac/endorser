@@ -10,21 +10,13 @@ class Genre
     @@all = []
 
     def initialize(attributes)
-
       @books = []
-
-      attributes.each do |k,v|
-          self.send("#{k}=", v)
-      end
-
+      @name = attributes[:name]
+      @books << attributes[:book] if attributes[:book]
     end
 
     def self.all
       @@all
-    end
-
-    def books=(book)
-      self.books << book
     end
 
     def add_book(book)
