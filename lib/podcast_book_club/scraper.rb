@@ -42,6 +42,7 @@ class Scraper
 
           attributes = {}
 
+
           begin
 
             attributes[:url] = result.info_link unless result.info_link.nil?
@@ -50,12 +51,13 @@ class Scraper
             attributes[:genre] = result.categories unless result.categories.nil? || result.categories == ""
             attributes[:synopsis] = result.description unless result.description.nil?
             attributes[:episode] = episode
+            
 
             Book.find_or_create_by_title(attributes)
 
           rescue
 
-            puts "I'm having trouble adding the book " + Rainbow("#{query}").bg(:black).yellow + "from episode: #{episode.output(Episode.all.index(episode))}."
+            puts "I'm having trouble adding the book " + Rainbow("#{query}.").bg(:black).yellow
 
           end
         end

@@ -6,14 +6,25 @@ class Book
     extend Sortable::ClassMethods
     include Memorable::InstanceMethods
 
-
     @@all = []
 
     def initialize(attributes)
         @episode = []
 
         attributes.each do |k,v|
-            self.send("#{k}=", v) unless v == nil
+            unless v == nil
+
+                if "#{k}" == "genre"
+                    self.add_genre(v)
+                elsif "#{k}" == "episode"
+                    self.add_episode(v)
+                elsif "#{k}" == "author"
+                    self.add_author(v)
+                else
+                    self.send("#{k}=", v)
+                end
+
+            end
         end
 
     end
@@ -22,11 +33,11 @@ class Book
         @@all
     end
 
-    def episode=(episode)
+    def add_episode(episode)
         episode.add_book(self)
     end
 
-    def author=(authors)
+    def add_author(authors)
         @author ||= []
 
         if authors.kind_of?(Array)
@@ -43,7 +54,7 @@ class Book
 
     end
 
-    def genre=(genre)
+    def add_genre(genre)
         @genre ||= []
 
         new_genre = Genre.find_or_create_by_name(genre)
