@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    podcast-book-club (1.0.1)
+    podcast-book-club (1.0.2)
       googlebooks (~> 0.0.9)
       nokogiri (~> 1.6, >= 1.6.8)
       rainbow (~> 3.0)
